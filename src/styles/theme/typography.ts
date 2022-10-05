@@ -1,5 +1,5 @@
 const typography = {
-  fontFamily: '"Roboto", "Open Sans", "sans-serif"',
+  fontFamily: '"IBM Plex", "Open Sans", "sans-serif"',
   fontSize: 13,
   fontWeightLight: 300,
   fontWeightRegular: 400,

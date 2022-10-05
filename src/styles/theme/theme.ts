@@ -1,4 +1,5 @@
 import { PaletteOptions, createTheme, css } from "@mui/material/styles";
+import { lineHeight } from "@mui/system";
 
 import typography from "./typography";
 
@@ -18,7 +19,7 @@ export const lightTheme = createTheme({
       secondary: "rgb(103, 119, 136)",
     },
     primary: {
-      main: "rgb(0, 123, 248)",
+      main: "rgb(0, 30, 60)",
       contrastText: "rgb(235, 234, 239)",
     },
     divider: "rgba(0, 0, 0, 0.12)",
@@ -43,7 +44,16 @@ export const darkTheme = createTheme({
     },
     divider: "rgb(85, 89, 110)",
   },
-  typography: typography,
+  // typography: typography,
+  // typography: {
+  //   body1: {
+  //     fontSize: 0.875,
+  //     lineHeight: 1.5,
+  //     letterSpacing: 0,
+  //     fontFamily: "IBM Plex",
+  //     fontWeight: 700
+  //   },
+  // },
 });
 
 export const globalStyles = css`

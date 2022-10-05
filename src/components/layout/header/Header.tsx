@@ -17,6 +17,7 @@ import { useTheme as nexThemes } from "next-themes";
 
 import { useTheme } from "@mui/material/styles";
 import ColorModeContext from "../../colorModeContext/ColorModeContext";
+import Link from "next/link";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -104,7 +105,21 @@ const Header: React.FC = ({ onSidebarOpen }) => {
               pl: 4,
             }}
           >
-            <Typography>Home</Typography>
+            <Link href="/">
+              <Box
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  cursor: 'ponter'
+                }}
+              >
+                Home
+              </Box>
+            </Link>
             <Typography>Venue/Event</Typography>
             <Typography>Popular/Location</Typography>
             <Typography>Contact</Typography>
