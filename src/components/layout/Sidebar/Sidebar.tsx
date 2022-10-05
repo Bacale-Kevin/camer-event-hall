@@ -5,7 +5,12 @@ import Drawer from "@mui/material/Drawer";
 
 import { useTheme } from "@mui/material/styles";
 
-const Sidebar = ({ open, onClose }) => {
+type Props = {
+  open: boolean;
+  onClose: () => void;
+};
+
+const Sidebar: React.FC<Props> = ({ open, onClose }) => {
   const theme = useTheme();
 
   return (
@@ -56,11 +61,6 @@ const Sidebar = ({ open, onClose }) => {
       </Drawer>
     </React.Fragment>
   );
-};
-
-Sidebar.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
 };
 
 export default Sidebar;
