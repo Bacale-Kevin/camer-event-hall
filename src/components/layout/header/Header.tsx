@@ -10,6 +10,13 @@ import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemButton from "@mui/material/ListItemButton";
+import Popper from "@mui/material/Popper";
+import Fade from "@mui/material/Fade";
+import Paper from "@mui/material/Paper";
 import AdbIcon from "@mui/icons-material/Adb";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme as nexThemes } from "next-themes";
@@ -22,12 +29,44 @@ type Props = {
 };
 
 const Header: React.FC<Props> = ({ onSidebarOpen }) => {
+  const [open, setOpen] = React.useState(false);
+  const [openLocation, setOpenLoction] = React.useState(false);
+  const [anchorElVenue, setAnchorElVenue] = React.useState<null | HTMLElement>(null);
+  const [anchorElLocation, setAnchorElLocation] = React.useState<null | HTMLElement>(null);
   const theme = useTheme();
 
   const { theme: themes, resolvedTheme, setTheme } = nexThemes();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  const handleOnMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setAnchorElVenue(e.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+
+  const handleOnMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setAnchorElVenue(e.currentTarget);
+    setOpen((previousOpen) => !previousOpen);
+  };
+  const handleOnMouseEnterLocation = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setAnchorElLocation(e.currentTarget);
+    setOpenLoction((previousOpen) => !previousOpen);
+  };
+
+  const handleOnMouseLeaveLocation = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setAnchorElLocation(e.currentTarget);
+    setOpenLoction((previousOpen) => !previousOpen);
+  };
+
+  const canBeOpen = open && Boolean(anchorElVenue);
+  const id = canBeOpen ? "transition-popper" : undefined;
+  const canBeOpenLocation = open && Boolean(anchorElLocation);
+  const idLocation = canBeOpenLocation ? "transition-popper" : undefined;
 
   return (
     <AppBar position="static" sx={{ overflow: "hidden" }}>
@@ -130,6 +169,9 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
             </Link>
             <Link href="/">
               <Typography
+                aria-describedby={id}
+                onMouseEnter={handleOnMouseEnter}
+                onMouseLeave={handleOnMouseLeave}
                 component="a"
                 sx={{
                   fontSize: "0.875rem",
@@ -151,11 +193,40 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 }}
               >
                 Venue/Event
+                <Popper id={id} open={open} anchorEl={anchorElVenue} transition>
+                  {({ TransitionProps }) => (
+                    <Fade {...TransitionProps} timeout={400}>
+                      <Paper sx={{ width: "100%", pt: 2, minWidth: "170px" }}>
+                        <Link href="">
+                          <List>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Marraige Halls" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Barber Shop" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Conference Hall" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Hotel" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Restaurant" />
+                            </ListItemButton>
+                          </List>
+                        </Link>
+                      </Paper>
+                    </Fade>
+                  )}
+                </Popper>
               </Typography>
             </Link>
             <Link href="/">
               <Typography
                 component="a"
+                onMouseEnter={handleOnMouseEnterLocation}
+                onMouseLeave={handleOnMouseLeaveLocation}
                 sx={{
                   fontSize: "0.875rem",
                   lineHeight: 1.5,
@@ -176,6 +247,33 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 }}
               >
                 Popular/Location
+                <Popper id={idLocation} open={openLocation} anchorEl={anchorElLocation} transition>
+                  {({ TransitionProps }) => (
+                    <Fade {...TransitionProps} timeout={400}>
+                      <Paper sx={{ width: "100%", pt: 2, minWidth: "170px" }}>
+                        <Link href="">
+                          <List>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Yaounde" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Douala" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Limbe" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Buea" />
+                            </ListItemButton>
+                            <ListItemButton component="a" sx={{ width: "100%" }}>
+                              <ListItemText primary="Kribi" />
+                            </ListItemButton>
+                          </List>
+                        </Link>
+                      </Paper>
+                    </Fade>
+                  )}
+                </Popper>
               </Typography>
             </Link>
             <Link href="/contact ">
