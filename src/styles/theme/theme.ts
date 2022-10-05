@@ -22,6 +22,9 @@ export const lightTheme = createTheme({
       main: "rgb(0, 30, 60)",
       contrastText: "rgb(235, 234, 239)",
     },
+    secondary: {
+      main: "#006ad5",
+    },
     divider: "rgba(0, 0, 0, 0.12)",
   },
   typography: typography,

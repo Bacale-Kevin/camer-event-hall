@@ -40,15 +40,15 @@ const Layout: React.FC<Props> = ({ children, title }) => {
          threshold: 100,
        });
 
-       const scrollTo = (id) => {
-         setTimeout(() => {
-           const element = document.querySelector(`#${id}`);
-           if (!element) {
-             return;
-           }
-           window.scrollTo({ left: 0, top: element.offsetTop, behavior: "smooth" });
-         });
-       };
+      //  const scrollTo = (id) => {
+      //    setTimeout(() => {
+      //      const element = document.querySelector(`#${id}`);
+      //      if (!element) {
+      //        return;
+      //      }
+      //      window.scrollTo({ left: 0, top: element.offsetTop, behavior: "smooth" });
+      //    });
+      //  };
 
   return (
     <Box id="page-top">
@@ -63,7 +63,7 @@ const Layout: React.FC<Props> = ({ children, title }) => {
       <NoSsr>
         <Zoom in={trigger}>
           <Box
-            onClick={() => scrollTo("page-top")}
+            // onClick={() => scrollTo("page-top")}
             role="presentation"
             sx={{ position: "fixed", bottom: 24, right: 32 }}
           >

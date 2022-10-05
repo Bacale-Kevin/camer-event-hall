@@ -15,8 +15,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
 import Popper from "@mui/material/Popper";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
 import Fade from "@mui/material/Fade";
 import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
 import AdbIcon from "@mui/icons-material/Adb";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme as nexThemes } from "next-themes";
@@ -383,20 +385,29 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 </MenuItem>
               ))}
             </Menu> */}
-            {theme.palette.mode} mode
             <IconButton
-              disableTouchRipple
-              // onClick={colorMode.toggleColorMode}
+              color="secondary"
+              size="small"
               onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
-              color="inherit"
               sx={{
-                display: { xs: "none", sm: "block", mx: 4, border: "1px solid rgb(19, 47, 76)", borderRadius: "10px" },
+                display: {
+                  xs: "none",
+                  sm: "block",
+                  // mx: 4,
+                  border: "1px solid",
+                  borderColor: theme.palette.secondary.main,
+                  borderRadius: "10px",
+                },
               }}
             >
               {theme.palette.mode === "dark" ? (
-                <LightModeIcon fontSize="small" color="info" />
+                <Tooltip title="switch to light mode">
+                  <LightModeIcon fontSize="small" color="secondary" />
+                </Tooltip>
               ) : (
-                <LightModeIcon fontSize="small" color="info" />
+                <Tooltip title="switch to dark mode">
+                  <DarkModeIcon fontSize="small" color="secondary" />
+                </Tooltip>
               )}
             </IconButton>
             <Button variant="contained" color="secondary" sx={{ display: { xs: "none", lg: "block" } }}>
