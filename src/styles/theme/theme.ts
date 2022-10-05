@@ -44,16 +44,7 @@ export const darkTheme = createTheme({
     },
     divider: "rgb(85, 89, 110)",
   },
-  // typography: typography,
-  // typography: {
-  //   body1: {
-  //     fontSize: 0.875,
-  //     lineHeight: 1.5,
-  //     letterSpacing: 0,
-  //     fontFamily: "IBM Plex",
-  //     fontWeight: 700
-  //   },
-  // },
+  typography: typography,
 });
 
 export const globalStyles = css`

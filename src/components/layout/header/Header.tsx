@@ -9,22 +9,20 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme as nexThemes } from "next-themes";
-
-import { useTheme } from "@mui/material/styles";
-import ColorModeContext from "../../colorModeContext/ColorModeContext";
 import Link from "next/link";
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import { useTheme } from "@mui/material/styles";
 
-const Header: React.FC = ({ onSidebarOpen }) => {
+type Props = {
+  onSidebarOpen: () => void;
+};
+
+const Header: React.FC<Props> = ({ onSidebarOpen }) => {
   const theme = useTheme();
-  const colorMode = React.useContext(ColorModeContext);
 
   const { theme: themes, resolvedTheme, setTheme } = nexThemes();
   const [mounted, setMounted] = useState(false);
@@ -70,7 +68,7 @@ const Header: React.FC = ({ onSidebarOpen }) => {
             </IconButton>
           </Box>
 
-          {/* show to logo on the center of the navbar on small screens */}
+          {/* show logo on the center of the navbar on small screens */}
           <Box
             sx={{ flexGrow: 1, display: { xs: "flex", lg: "none" }, alignItems: "center", justifyContent: "center" }}
           >
@@ -101,12 +99,12 @@ const Header: React.FC = ({ onSidebarOpen }) => {
               display: { xs: "none", lg: "flex" },
               alignItems: "center",
               justifyContent: "center",
-              gap: 4,
+              gap: 2,
               pl: 4,
             }}
           >
             <Link href="/">
-              <Box
+              <Typography
                 component="a"
                 sx={{
                   fontSize: "0.875rem",
@@ -114,17 +112,147 @@ const Header: React.FC = ({ onSidebarOpen }) => {
                   letterSpacing: 0,
                   fontFamily: "IBM Plex Sans",
                   fontWeight: 700,
-                  cursor: 'ponter'
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
                 }}
               >
                 Home
-              </Box>
+              </Typography>
             </Link>
-            <Typography>Venue/Event</Typography>
-            <Typography>Popular/Location</Typography>
-            <Typography>Contact</Typography>
-            <Typography>Login</Typography>
-            <Typography>Signup</Typography>
+            <Link href="/">
+              <Typography
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                Venue/Event
+              </Typography>
+            </Link>
+            <Link href="/">
+              <Typography
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                Popular/Location
+              </Typography>
+            </Link>
+            <Link href="/contact ">
+              <Typography
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                Contact
+              </Typography>
+            </Link>
+            <Link href="/login">
+              <Typography
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                Login
+              </Typography>
+            </Link>
+            <Box component={Link} href="/signup">
+              <Typography
+                component="a"
+                sx={{
+                  fontSize: "0.875rem",
+                  lineHeight: 1.5,
+                  letterSpacing: 0,
+                  fontFamily: "IBM Plex Sans",
+                  fontWeight: 700,
+                  textTransform: "capitalized",
+                  py: 0.5,
+                  px: 1.5,
+                  transition: theme.transitions.create(["all"], {
+                    duration: theme.transitions.duration.standard,
+                    easing: theme.transitions.easing.easeInOut,
+                  }),
+                  "&:hover": {
+                    borderRadius: "4px",
+                    bgcolor: theme.palette.primary.light,
+                  },
+                }}
+              >
+                Signup
+              </Typography>
+            </Box>
           </Box>
 
           {/* avatar */}
