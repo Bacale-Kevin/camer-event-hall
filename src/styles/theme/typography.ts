@@ -6,9 +6,10 @@ const typography = {
   fontWeightMedium: 500,
   fontWeightBold: 600,
   h1: {
-    fontSize: "2rem",
+    fontSize: "4rem",
     fontWeight: 600,
     lineHeight: 1.25,
+    fontFamily: "Poppins",
   },
   h2: {
     fontSize: "1.75rem",

@@ -19,7 +19,7 @@ export const lightTheme = createTheme({
       secondary: "rgb(103, 119, 136)",
     },
     primary: {
-      main: "rgb(0, 30, 60)",
+      main: "#001E3C",
       contrastText: "rgb(235, 234, 239)",
     },
     secondary: {
@@ -42,7 +42,7 @@ export const darkTheme = createTheme({
       secondary: "rgba(255, 255, 255, 0.5)",
     },
     primary: {
-      main: "rgb(0, 123, 248)",
+      main: "#001E3C",
       contrastText: "rgb(235, 234, 239)",
     },
     divider: "rgb(85, 89, 110)",
