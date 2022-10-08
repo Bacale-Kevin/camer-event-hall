@@ -15,7 +15,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-const Background = styled(Box)({
+export const Background = styled(Box)({
   backgroundImage: "url('/images/Sprinkle.svg')",
   height: "45rem",
 });

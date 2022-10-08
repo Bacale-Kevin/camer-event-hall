@@ -22,15 +22,16 @@ import Tooltip from "@mui/material/Tooltip";
 import AdbIcon from "@mui/icons-material/Adb";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { useTheme as nexThemes } from "next-themes";
-import Link from "next/link";
-
 import { useTheme } from "@mui/material/styles";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 type Props = {
   onSidebarOpen: () => void;
 };
 
 const Header: React.FC<Props> = ({ onSidebarOpen }) => {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [openLocation, setOpenLoction] = React.useState(false);
   const [anchorElVenue, setAnchorElVenue] = React.useState<null | HTMLElement>(null);
@@ -160,6 +161,9 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeInOut,
                   }),
+                  bgcolor: router.pathname === "/" ? theme.palette.primary.light : "",
+                  borderRadius: router.pathname === "/" ? "4px" : "",
+
                   "&:hover": {
                     borderRadius: "4px",
                     bgcolor: theme.palette.primary.light,
@@ -294,6 +298,10 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeInOut,
                   }),
+
+                  bgcolor: router.pathname === "/contact" ? theme.palette.primary.light : "",
+                  borderRadius: router.pathname === "/contact" ? "4px" : "",
+
                   "&:hover": {
                     borderRadius: "4px",
                     bgcolor: theme.palette.primary.light,
@@ -319,6 +327,10 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeInOut,
                   }),
+
+                  bgcolor: router.pathname === "/auth/login" ? theme.palette.primary.light : "",
+                  borderRadius: router.pathname === "/auth/login" ? "4px" : "",
+
                   "&:hover": {
                     borderRadius: "4px",
                     bgcolor: theme.palette.primary.light,
@@ -328,7 +340,7 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 Login
               </Typography>
             </Link>
-            <Box component={Link} href="/signup">
+            <Box component={Link} href="/auth/signup">
               <Typography
                 component="a"
                 sx={{
@@ -344,6 +356,10 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeInOut,
                   }),
+
+                  bgcolor: router.pathname === "/auth/signup" ? theme.palette.primary.light : "",
+                  borderRadius: router.pathname === "/auth/signup" ? "4px" : undefined,
+
                   "&:hover": {
                     borderRadius: "4px",
                     bgcolor: theme.palette.primary.light,
