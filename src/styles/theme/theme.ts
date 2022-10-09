@@ -27,6 +27,15 @@ export const lightTheme = createTheme({
     },
     divider: "rgba(0, 0, 0, 0.12)",
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'capitalize'
+        }
+      }
+    }
+  },
   typography: typography,
 });
 
@@ -46,6 +55,15 @@ export const darkTheme = createTheme({
       contrastText: "rgb(235, 234, 239)",
     },
     divider: "rgb(85, 89, 110)",
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: "capitalize",
+        },
+      },
+    },
   },
   typography: typography,
 });
