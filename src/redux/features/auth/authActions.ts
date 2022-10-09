@@ -1,12 +1,33 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { API } from "./../../../../utils/baseUrl";
 
-export const signUpUser = createAsyncThunk(`/api/signup`, async (userData, { rejectWithValue, fulfillWithValue }) => {
-  try {
-    const { data } = await axios.post(`/api/signup`, userData);
+import { loginFormInputs, signUpFormInputs } from "./../../../types/user.types";
 
-    return fulfillWithValue(data);
-  } catch (error: any) {
-    return rejectWithValue(error.response.data);
+export const signUpUser = createAsyncThunk(
+  `/api/auth/signup`,
+  async (signUpFormData: signUpFormInputs, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await API.post(`/api/auth/signup`, signUpFormData);
+
+      return fulfillWithValue(data);
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
   }
-});
+);
+export const loginUser = createAsyncThunk(
+  `/api/auth/login`,
+  async (loginFormData: loginFormInputs, { rejectWithValue, fulfillWithValue }) => {
+    try {
+      const { data } = await API.post(`/api/auth/login`, loginFormData);
+
+      return fulfillWithValue(data);
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);

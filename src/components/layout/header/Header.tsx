@@ -311,7 +311,7 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 Contact
               </Typography>
             </Link>
-            <Link href="/login">
+            <Link href="/auth/login">
               <Typography
                 component="a"
                 sx={{
@@ -358,7 +358,7 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                   }),
 
                   bgcolor: router.pathname === "/auth/signup" ? theme.palette.primary.light : "",
-                  borderRadius: router.pathname === "/auth/signup" ? "4px" : undefined,
+                  borderRadius: router.pathname === "/auth/signup" ? "4px" : "",
 
                   "&:hover": {
                     borderRadius: "4px",

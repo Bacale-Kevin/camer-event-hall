@@ -22,14 +22,14 @@ import * as Yup from "yup";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 import Layout from "../../layouts/layout/Layout";
-import { signUpUser } from "../../redux/features/auth/authActions";
+import Link from "next/link";
+import { loginFormInputs } from "../../types/user.types";
 import { AppDispatch, AppState } from "../../redux/store";
-import { signUpFormInputs } from "../../types/user.types";
+import { loginUser } from "../../redux/features/auth/authActions";
 
 const Background = styled(Box)({
   backgroundImage: "url('/images/Sprinkle.svg')",
@@ -37,15 +37,11 @@ const Background = styled(Box)({
 });
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required().min(2, "please enter your name").max(25, "name to long"),
   email: Yup.string().required("please enter your email").email(),
   password: Yup.string().required("please enter your password").min(6, "password should be atlist 6 characters long"),
-  confirmPassword: Yup.string()
-    .required("please confirm password")
-    .oneOf([Yup.ref("password"), null], "password does not match"),
 });
 
-const Signup: React.FC = () => {
+const Login: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { loading } = useSelector((state: AppState) => state.auth);
@@ -55,7 +51,7 @@ const Signup: React.FC = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<signUpFormInputs>({ resolver: yupResolver(validationSchema), mode: "all" });
+  } = useForm<loginFormInputs>({ resolver: yupResolver(validationSchema), mode: "all" });
 
   /********** TOGGLE PASSWORD **********/
   const handleClickShowPassword = () => {
@@ -65,17 +61,13 @@ const Signup: React.FC = () => {
     e.preventDefault();
   };
 
-  /***** HANDLE SUBMIT *****/
-  const onSubmitHandler: SubmitHandler<signUpFormInputs> = async (data) => {
+  const onSubmitHandler: SubmitHandler<loginFormInputs> = async (data) => {
     try {
-      const response = await dispatch(signUpUser(data)).unwrap();
-
-      reset();
-      // toast.success(response.toString());
-      router.push("/auth/login");
+      await dispatch(loginUser(data)).unwrap();
+      router.push("/");
     } catch (error: any) {
-      toast.error(error);
       console.log(error);
+      toast.error(error);
     }
   };
 
@@ -87,29 +79,18 @@ const Signup: React.FC = () => {
             <Grid item xs={12}>
               <Paper sx={{ py: 4, px: 4, pb: 8 }}>
                 <Typography color="text.secondary" fontFamily="Poppins">
-                  Welcome!
+                  Welcome back!
                 </Typography>
-                <Typography variant="h3">Signup to create an account</Typography>
+                <Typography variant="h3">Login into your account</Typography>
                 <Stack>
                   <Box component="form" noValidate onSubmit={handleSubmit(onSubmitHandler)}>
                     <Stack sx={{ mt: 5 }} spacing={2}>
-                      {/* name */}
-
-                      <TextField
-                        {...register("name")}
-                        autoFocus
-                        id="standard-basic"
-                        label="Full Name"
-                        variant="outlined"
-                        size="small"
-                        helperText={errors.name?.message}
-                        error={errors.name ? true : false}
-                      />
                       {/* email */}
 
                       <TextField
                         {...register("email")}
                         id="standard-basic"
+                        autoFocus
                         label="Email"
                         variant="outlined"
                         size="small"
@@ -146,42 +127,11 @@ const Signup: React.FC = () => {
                           {errors.password?.message}
                         </FormHelperText>
                       </FormControl>
-                      {/* confirm password */}
 
-                      <FormControl>
-                        <InputLabel htmlFor="confirm-password" size="small">
-                          Confirm Password
-                        </InputLabel>
-                        <OutlinedInput
-                          {...register("confirmPassword")}
-                          error={errors.confirmPassword ? true : false}
-                          id="confirm-password"
-                          type={showPassword ? "text" : "password"}
-                          label="confirm Password"
-                          fullWidth
-                          size="small"
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                size="small"
-                              >
-                                {showPassword ? <VisibilityOffOutlined /> : <VisibilityOutlined />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                        <FormHelperText error={errors.confirmPassword ? true : false}>
-                          {errors.confirmPassword?.message}
-                        </FormHelperText>
-                      </FormControl>
                       {/* submit button */}
 
                       <Button type="submit" disabled={loading} variant="contained">
-                        Sign Up
+                        Login
                         {loading ? <CircularProgress color="inherit" size="20px" sx={{ ml: 2 }} /> : ""}
                       </Button>
                       <Grid container>
@@ -197,7 +147,21 @@ const Signup: React.FC = () => {
                                 justifyContent: "center",
                               }}
                             >
-                              {"Already have an account?  Login"}
+                              {"Don't have an account?  Sign up"}
+                            </Box>
+                          </Box>
+                          <Box component={Link} href="/auth/login">
+                            <Box
+                              component="a"
+                              sx={{
+                                textDecoration: "underline",
+                                cursor: "pointer",
+                                color: "#1976d2",
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {"Forgot password"}
                             </Box>
                           </Box>
                         </Grid>
@@ -214,4 +178,4 @@ const Signup: React.FC = () => {
   );
 };
 
-export default Signup;
+export default Login;
