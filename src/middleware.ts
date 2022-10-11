@@ -20,6 +20,9 @@ export async function middleware(request: NextRequest) {
       url.pathname = "/auth/login";
       return NextResponse.redirect(url);
     }
+    //  else {
+    //   const payload = await verifyToken(token);
+    // }
   }
 
   /*** PREVENT AUTH USERS FROM ACCESSING THE LOGIN SIGNUP AND FORGOT PASSWORD PAGE ***/

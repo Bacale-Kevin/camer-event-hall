@@ -35,7 +35,7 @@ function MyApp(props: MyAppProps) {
       };
       fetchAuthUser();
     }
-  }, [router]);
+  }, [router.pathname]);
 
   const { store } = reduxWrapper.useWrappedStore(rest);
   return (
