@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { IUser } from "./../../../types/user.types";
-import { signUpUser, loginUser, getLoggedInUser } from "./authActions";
+import { signUpUser, loginUser, getLoggedInUser, logoutUser } from "./authActions";
 
 type UserData = {
   loading: boolean;
-  data: string | IUser | null;
+  data: string | null;
+  authUser: IUser | null;
   isAuth: boolean;
   isError: boolean;
   isSuccess: boolean;
@@ -15,6 +16,7 @@ type UserData = {
 const initialState: UserData = {
   loading: false,
   data: null,
+  authUser: null,
   isAuth: false,
   isError: false,
   isSuccess: false,
@@ -76,7 +78,8 @@ const authSlice = createSlice({
       state.isSuccess = true;
       state.isAuth = true;
       state.isError = false;
-      state.data = action.payload;
+      state.authUser = action.payload;
+      state.data = null;
 
       return state;
     });
@@ -84,6 +87,28 @@ const authSlice = createSlice({
       state.loading = false;
       state.isError = true;
       state.isAuth = false;
+      state.isSuccess = false;
+      state.errorMessage = action.payload as string;
+    });
+
+    /** LOGOUT USER **/
+    builder.addCase(logoutUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(logoutUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isSuccess = true;
+      state.isAuth = false;
+      state.authUser = null;
+      state.isError = false;
+      state.data = action.payload;
+
+      return state;
+    });
+    builder.addCase(logoutUser.rejected, (state, action) => {
+      state.loading = false;
+      state.isError = true;
+      state.isAuth = true;
       state.isSuccess = false;
       state.errorMessage = action.payload as string;
     });

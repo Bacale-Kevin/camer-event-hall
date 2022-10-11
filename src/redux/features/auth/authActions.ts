@@ -42,3 +42,14 @@ export const getLoggedInUser = createAsyncThunk(`/api/auth/me`, async () => {
     return error.response.data;
   }
 });
+
+export const logoutUser = createAsyncThunk(`/api/logout`, async () => {
+  try {
+    const { data } = await API.get(`/api/auth/logout`);
+
+    return data;
+  } catch (error: any) {
+    console.log(error);
+    return error.response.data;
+  }
+});

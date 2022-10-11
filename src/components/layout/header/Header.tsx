@@ -25,6 +25,23 @@ import { useTheme as nexThemes } from "next-themes";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, AppState } from "../../../redux/store";
+import { logoutUser } from "../../../redux/features/auth/authActions";
+import { Stack } from "@mui/material";
+import {
+  AccountCircle,
+  AccountCircleOutlined,
+  BookOnline,
+  BookOnlineOutlined,
+  Dashboard,
+  DashboardOutlined,
+  FavoriteBorderOutlined,
+  FavoriteOutlined,
+  LogoutOutlined,
+  ReviewsOutlined,
+  SettingsOutlined,
+} from "@mui/icons-material";
 
 type Props = {
   onSidebarOpen: () => void;
@@ -32,23 +49,32 @@ type Props = {
 
 const Header: React.FC<Props> = ({ onSidebarOpen }) => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const theme = useTheme();
+
+  //redux
+  const { authUser, isAuth, loading } = useSelector((state: AppState) => state.auth);
+
+  //menu items links dropdown state
   const [open, setOpen] = React.useState(false);
   const [openLocation, setOpenLoction] = React.useState(false);
   const [anchorElVenue, setAnchorElVenue] = React.useState<null | HTMLElement>(null);
   const [anchorElLocation, setAnchorElLocation] = React.useState<null | HTMLElement>(null);
-  const theme = useTheme();
+
+  //avatar user state
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const { theme: themes, resolvedTheme, setTheme } = nexThemes();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
+  /**** Handle Dropdown Menu Links *****/
   const handleOnMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setAnchorElVenue(e.currentTarget);
     setOpen((previousOpen) => !previousOpen);
   };
-
   const handleOnMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setAnchorElVenue(e.currentTarget);
@@ -59,13 +85,28 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
     setAnchorElLocation(e.currentTarget);
     setOpenLoction((previousOpen) => !previousOpen);
   };
-
   const handleOnMouseLeaveLocation = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     setAnchorElLocation(e.currentTarget);
     setOpenLoction((previousOpen) => !previousOpen);
   };
 
+  /***** Handle Open And Close User Avatar *****/
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  /***** Logout User ******/
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    setAnchorElUser(null);
+    router.push("/auth/login");
+  };
+
+  /***** Handle Popper Dropdown Stuff *****/
   const canBeOpen = open && Boolean(anchorElVenue);
   const id = canBeOpen ? "transition-popper" : undefined;
   const canBeOpenLocation = open && Boolean(anchorElLocation);
@@ -311,96 +352,102 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                 Contact
               </Typography>
             </Link>
-            <Link href="/auth/login">
-              <Typography
-                component="a"
-                sx={{
-                  fontSize: "0.875rem",
-                  lineHeight: 1.5,
-                  letterSpacing: 0,
-                  fontFamily: "IBM Plex Sans",
-                  fontWeight: 700,
-                  textTransform: "capitalized",
-                  py: 0.5,
-                  px: 1.5,
-                  transition: theme.transitions.create(["all"], {
-                    duration: theme.transitions.duration.standard,
-                    easing: theme.transitions.easing.easeInOut,
-                  }),
+            {!isAuth && !loading ? (
+              <Link href="/auth/login">
+                <Typography
+                  component="a"
+                  sx={{
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
+                    letterSpacing: 0,
+                    fontFamily: "IBM Plex Sans",
+                    fontWeight: 700,
+                    textTransform: "capitalized",
+                    py: 0.5,
+                    px: 1.5,
+                    transition: theme.transitions.create(["all"], {
+                      duration: theme.transitions.duration.standard,
+                      easing: theme.transitions.easing.easeInOut,
+                    }),
 
-                  bgcolor: router.pathname === "/auth/login" ? theme.palette.primary.light : "",
-                  borderRadius: router.pathname === "/auth/login" ? "4px" : "",
+                    bgcolor: router.pathname === "/auth/login" ? theme.palette.primary.light : "",
+                    borderRadius: router.pathname === "/auth/login" ? "4px" : "",
 
-                  "&:hover": {
-                    borderRadius: "4px",
-                    bgcolor: theme.palette.primary.light,
-                  },
-                }}
-              >
-                Login
-              </Typography>
-            </Link>
-            <Box component={Link} href="/auth/signup">
-              <Typography
-                component="a"
-                sx={{
-                  fontSize: "0.875rem",
-                  lineHeight: 1.5,
-                  letterSpacing: 0,
-                  fontFamily: "IBM Plex Sans",
-                  fontWeight: 700,
-                  textTransform: "capitalized",
-                  py: 0.5,
-                  px: 1.5,
-                  transition: theme.transitions.create(["all"], {
-                    duration: theme.transitions.duration.standard,
-                    easing: theme.transitions.easing.easeInOut,
-                  }),
+                    "&:hover": {
+                      borderRadius: "4px",
+                      bgcolor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  Login
+                </Typography>
+              </Link>
+            ) : (
+              ""
+            )}
+            {!isAuth && !loading ? (
+              <Box component={Link} href="/auth/signup">
+                <Typography
+                  component="a"
+                  sx={{
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
+                    letterSpacing: 0,
+                    fontFamily: "IBM Plex Sans",
+                    fontWeight: 700,
+                    textTransform: "capitalized",
+                    py: 0.5,
+                    px: 1.5,
+                    transition: theme.transitions.create(["all"], {
+                      duration: theme.transitions.duration.standard,
+                      easing: theme.transitions.easing.easeInOut,
+                    }),
 
-                  bgcolor: router.pathname === "/auth/signup" ? theme.palette.primary.light : "",
-                  borderRadius: router.pathname === "/auth/signup" ? "4px" : "",
+                    bgcolor: router.pathname === "/auth/signup" ? theme.palette.primary.light : "",
+                    borderRadius: router.pathname === "/auth/signup" ? "4px" : "",
 
-                  "&:hover": {
-                    borderRadius: "4px",
-                    bgcolor: theme.palette.primary.light,
-                  },
-                }}
-              >
-                Signup
-              </Typography>
-            </Box>
+                    "&:hover": {
+                      borderRadius: "4px",
+                      bgcolor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  Signup
+                </Typography>
+              </Box>
+            ) : (
+              <Box component={Link} href="/auth/signup">
+                <Typography
+                  component="a"
+                  sx={{
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
+                    letterSpacing: 0,
+                    fontFamily: "IBM Plex Sans",
+                    fontWeight: 700,
+                    textTransform: "capitalized",
+                    py: 0.5,
+                    px: 1.5,
+                    transition: theme.transitions.create(["all"], {
+                      duration: theme.transitions.duration.standard,
+                      easing: theme.transitions.easing.easeInOut,
+                    }),
+
+                    bgcolor: router.pathname === "/auth/signup" ? theme.palette.primary.light : "",
+                    borderRadius: router.pathname === "/auth/signup" ? "4px" : "",
+
+                    "&:hover": {
+                      borderRadius: "4px",
+                      bgcolor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  Favorite
+                </Typography>
+              </Box>
+            )}
           </Box>
-
-          {/* avatar */}
-          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-            {/* avatar */}
-            {/* <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu> */}
+          <Stack direction="row" spacing={2}>
             <IconButton
               color="secondary"
               size="small"
@@ -429,7 +476,110 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
             <Button variant="contained" color="secondary" sx={{ display: { xs: "none", lg: "block" } }}>
               List Your Venue
             </Button>
-          </Box>
+
+            {/* avatar */}
+            {!loading && isAuth && authUser !== null ? (
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                {/* avatar */}
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar
+                      alt="User Avatart Image"
+                      src={authUser && authUser?.profilePicUrl ? authUser?.profilePicUrl : ""}
+                      sx={{ bgcolor: theme.palette.secondary.main }}
+                    >
+                      {!loading && authUser && authUser?.profilePicUrl
+                        ? authUser?.profilePicUrl
+                        : authUser.name
+                            .toUpperCase()
+                            .split(" ")
+                            .map((item, i) => {
+                              for (i; i < 2; i++) {
+                                return item.charAt(0);
+                              }
+                            })
+                            .join("")}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <AccountCircleOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Profile
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <DashboardOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Dashboard
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <BookOnlineOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Bookings
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <FavoriteBorderOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Favorites
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <ReviewsOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Reviews
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Stack direction="row" spacing={1}>
+                      <SettingsOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Settings
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Stack direction="row" spacing={1}>
+                      <LogoutOutlined sx={{ color: theme.palette.grey[800] }} />
+                      <Typography textAlign="center" color={theme.palette.grey[800]}>
+                        Logout
+                      </Typography>
+                    </Stack>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              ""
+            )}
+          </Stack>
         </Toolbar>
       </Container>
     </AppBar>
