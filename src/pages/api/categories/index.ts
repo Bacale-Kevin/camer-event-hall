@@ -38,13 +38,13 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
 
       if (category) return res.status(400).send(`Category ${category.name} already exist please create another one`);
 
-      await prisma.category.create({
+      const createdCategory = await prisma.category.create({
         data: {
           name: name.toLowerCase(),
         },
       });
 
-      return res.status(201).send("Category created successfully");
+      return res.status(201).json({ createdCategory, message: "Category created successfully"});
     } catch (error) {
       console.log(error);
       return res.status(500).send("Server error");
