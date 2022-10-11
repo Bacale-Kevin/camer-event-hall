@@ -38,19 +38,23 @@ function MyApp(props: MyAppProps) {
   }, [router.pathname]);
 
   const { store } = reduxWrapper.useWrappedStore(rest);
-  return (
-    <PageProvider emotionCache={emotionCache}>
-      <Provider store={store}>
-        <Head>
-          <meta name="viewport" content="initial-scale=1, width=device-width" />
-        </Head>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Toaster toastOptions={{ duration: 5000 }} />
-        <Component {...pageProps} />
-      </Provider>
-    </PageProvider>
-  );
+  if (typeof window === "undefined") {
+    return <></>;
+  } else {
+    return (
+      <PageProvider emotionCache={emotionCache}>
+        <Provider store={store}>
+          <Head>
+            <meta name="viewport" content="initial-scale=1, width=device-width" />
+          </Head>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <Toaster toastOptions={{ duration: 5000 }} />
+          <Component {...pageProps} />
+        </Provider>
+      </PageProvider>
+    );
+  }
 }
 
 export default reduxWrapper.withRedux(MyApp);

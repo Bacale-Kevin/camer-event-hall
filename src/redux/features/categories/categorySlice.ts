@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { createCategory, deleteCategory, getCategory, updateCategory, getCategories } from "./categoriesActions";
+import { createCategory, deleteCategory, updateCategory, getCategories } from "./categoriesActions";
 import { ICategory } from "./../../../types/category.types";
 
 const initialState: ICategory = {
@@ -59,42 +59,42 @@ const categorySlice = createSlice({
     });
 
     /** UPDATE **/
-    // builder.addCase(updateEventType.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(updateEventType.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.isSuccess = true;
-    //   state.isError = false;
-    //   state.categories = state.categories.map((item) => (item.id === action.payload.id ? action.payload : item));
+    builder.addCase(updateCategory.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(updateCategory.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.categories = state.categories.map((item) => (item.id === action.payload.id ? action.payload : item));
 
-    //   return state;
-    // });
-    // builder.addCase(updateEventType.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.isError = true;
-    //   state.isSuccess = false;
-    //   state.errorMessage = action.payload as string;
-    // });
+      return state;
+    });
+    builder.addCase(updateCategory.rejected, (state, action) => {
+      state.loading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.errorMessage = action.payload as string;
+    });
 
     /** DELETE **/
-    // builder.addCase(deleteEventType.pending, (state) => {
-    //   state.loading = true;
-    // });
-    // builder.addCase(deleteEventType.fulfilled, (state, action) => {
-    //   state.loading = false;
-    //   state.isSuccess = true;
-    //   state.isError = false;
-    //   state.categories = state.categories.filter((item) => item.id !== action.payload.id);
+    builder.addCase(deleteCategory.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteCategory.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isSuccess = true;
+      state.isError = false;
+      state.categories = state.categories.filter((item) => item.id !== action.payload.id);
 
-    //   return state;
-    // });
-    // builder.addCase(deleteEventType.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.isError = true;
-    //   state.isSuccess = false;
-    //   state.errorMessage = action.payload as string;
-    // });
+      return state;
+    });
+    builder.addCase(deleteCategory.rejected, (state, action) => {
+      state.loading = false;
+      state.isError = true;
+      state.isSuccess = false;
+      state.errorMessage = action.payload as string;
+    });
   },
 });
 

@@ -1,42 +1,26 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  Box,
-  Breadcrumbs,
-  Link as MuiLink,
-  Typography,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  MenuItem,
-  Stack,
-  TextField,
-  Alert,
-  Tooltip,
-} from "@mui/material";
+import { Box, Breadcrumbs, Link as MuiLink, Typography, Button, IconButton, Alert, Tooltip } from "@mui/material";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 import { AppDispatch, AppState } from "../../../redux/store";
 import { Category } from "@prisma/client";
-import { create } from "yup/lib/array";
 import { createCategory, deleteCategory, updateCategory } from "../../../redux/features/categories/categoriesActions";
+import CreateCategoryModal from "./CreateCategoryModal";
 
 const Category: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories } = useSelector((state: AppState) => state.category);
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  // const [tableData, setTableData] = useState(() => data);
-  // const [validationErrors, setValidationErrors] = useState({});
 
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
     try {
-      await dispatch(createCategory(name)).unwrap();
+      const response = await dispatch(createCategory(name)).unwrap();
+      console.log(response);
       /**@Todo show toast notification */
     } catch (error) {
       /**@Todo show toast notification */
@@ -130,13 +114,13 @@ const Category: React.FC = () => {
             )}
             renderTopToolbarCustomActions={() => (
               <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                Create New Event Category
+                Create New Category
               </Button>
             )}
           />
           <Alert severity="info">No data! click on the button at the top left to create one</Alert>
 
-          {/* <VenueTypesModal
+          {/* <CreateCategoryModal
             columns={columns}
             open={createModalOpen}
             onClose={() => setCreateModalOpen(false)}
@@ -171,12 +155,12 @@ const Category: React.FC = () => {
             )}
             renderTopToolbarCustomActions={() => (
               <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                Create New Event Category
+                Create New Category
               </Button>
             )}
           />
 
-          {/* <VenueTypesModal
+          {/* <CreateCategoryModal
             columns={columns}
             open={createModalOpen}
             onClose={() => setCreateModalOpen(false)}
