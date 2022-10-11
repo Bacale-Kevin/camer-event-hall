@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
 import { DashboardNavbar } from "./AdminDashBoardNavbar";
 import { DashboardSidebar } from "./AdminDashboardSideBar";
+import Head from "next/head";
 
 const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   display: "flex",
@@ -14,12 +16,19 @@ const DashboardLayoutRoot = styled("div")(({ theme }) => ({
   },
 }));
 
-export const AdminboardLayout = (props: any) => {
-  const { children } = props;
+type Props = {
+  children: React.ReactNode;
+  title?: string
+};
+
+export const AdminDashboardLayout: React.FC<Props> = ({ children, title }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <>
+    <Head>
+      <title>{ title }</title>
+    </Head>
       <DashboardLayoutRoot>
         <Box
           sx={{

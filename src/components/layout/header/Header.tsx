@@ -492,7 +492,7 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                     >
                       {!loading && authUser && authUser?.profilePicUrl
                         ? authUser?.profilePicUrl
-                        : authUser.name
+                        : authUser?.name
                             .toUpperCase()
                             .split(" ")
                             .map((item, i) => {

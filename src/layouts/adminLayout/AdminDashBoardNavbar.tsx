@@ -1,23 +1,29 @@
 import { useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { AppBar, Avatar, Badge, Box, IconButton, styled, Toolbar, Tooltip, Typography, useTheme } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import { Bell as BellIcon } from "./icons/bell";
-import { UserCircle as UserCircleIcon } from "./icons/user-circle";
 import { Users as UsersIcon } from "./icons/users";
 import { AccountPopover } from "./AccountPopover";
+import { useSelector } from "react-redux";
+
+import { AppState } from "../../redux/store";
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
   boxShadow: theme.shadows[3],
 }));
 
-export const DashboardNavbar = (props: any) => {
+type Props = {
+  onSidebarOpen: () => void;
+};
+
+export const DashboardNavbar: React.FC<Props> = ({ onSidebarOpen }) => {
   const theme = useTheme();
-  const { onSidebarOpen, ...other } = props;
   const settingsRef = useRef(null);
   const [openAccountPopover, setOpenAccountPopover] = useState(false);
+
+  //redux
+  const { authUser, isAuth, loading } = useSelector((state: AppState) => state.auth);
 
   return (
     <>
@@ -30,7 +36,6 @@ export const DashboardNavbar = (props: any) => {
             lg: "calc(100% - 280px)",
           },
         }}
-        {...other}
       >
         <Toolbar
           disableGutters
@@ -68,15 +73,27 @@ export const DashboardNavbar = (props: any) => {
           <Avatar
             onClick={() => setOpenAccountPopover(true)}
             ref={settingsRef}
+            alt="Admin Avatar Pic"
+            src={authUser && authUser?.profilePicUrl ? authUser?.profilePicUrl : ""}
             sx={{
               cursor: "pointer",
               height: 40,
               width: 40,
               ml: 1,
+              bgcolor: theme.palette.secondary.main,
             }}
-            src="/static/images/avatars/avatar_1.png"
           >
-            <UserCircleIcon fontSize="small" />
+            {!loading && authUser && authUser?.profilePicUrl
+              ? authUser?.profilePicUrl
+              : authUser?.name
+                  .toUpperCase()
+                  .split(" ")
+                  .map((item, i) => {
+                    for (i; i < 2; i++) {
+                      return item.charAt(0);
+                    }
+                  })
+                  .join("")}
           </Avatar>
         </Toolbar>
       </DashboardNavbarRoot>
@@ -87,8 +104,4 @@ export const DashboardNavbar = (props: any) => {
       />
     </>
   );
-};
-
-DashboardNavbar.propTypes = {
-  onSidebarOpen: PropTypes.func,
 };

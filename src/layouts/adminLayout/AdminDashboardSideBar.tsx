@@ -1,43 +1,64 @@
 import { useEffect } from "react";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
-import { Box, Button, Divider, Drawer, Theme, Typography, useMediaQuery } from "@mui/material";
+import { Box, Divider, Drawer, Theme, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AdbIcon from "@mui/icons-material/Adb";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { ChartBar as ChartBarIcon } from "./icons/chart-bar";
 import { Cog as CogIcon } from "./icons/cog";
-import { Lock as LockIcon } from "./icons/lock";
-import { Selector as SelectorIcon } from "./icons/selector";
-import { ShoppingBag as ShoppingBagIcon } from "./icons/shopping-bag";
 import { User as UserIcon } from "./icons/user";
-import { UserAdd as UserAddIcon } from "./icons/user-add";
 import { Users as UsersIcon } from "./icons/users";
-import { XCircle as XCircleIcon } from "./icons/x-circle";
-// import { Logo } from "./logo";
+import {
+  ApartmentRounded,
+  ArtTrackRounded,
+  BookOnlineRounded,
+  CategoryRounded,
+  Logout,
+  NotificationsActiveRounded,
+} from "@mui/icons-material";
+
 import { NavItem } from "./NavItem";
 
 const items = [
   {
-    href: "/",
+    href: "/admin",
     icon: <ChartBarIcon fontSize="small" />,
     title: "Dashboard",
   },
   {
-    href: "/customers",
+    href: "/admin/users",
     icon: <UsersIcon fontSize="small" />,
-    title: "Customers",
+    title: "Users",
   },
   {
-    href: "/products",
-    icon: <ShoppingBagIcon fontSize="small" />,
-    title: "Products",
+    href: "/admin/categories",
+    icon: <CategoryRounded fontSize="small" />,
+    title: "Categories",
   },
   {
-    href: "/account",
+    href: "/admin/amenities",
+    icon: <ArtTrackRounded fontSize="small" />,
+    title: "Amenities",
+  },
+  {
+    href: "/admin/venues",
+    icon: <ApartmentRounded fontSize="small" />,
+    title: "Venues",
+  },
+  {
+    href: "/admin/bookings",
+    icon: <BookOnlineRounded fontSize="small" />,
+    title: "Bookings",
+  },
+  {
+    href: "/admin/notification",
+    icon: <NotificationsActiveRounded fontSize="small" />,
+    title: "Notifications",
+  },
+  {
+    href: "/admin/account",
     icon: <UserIcon fontSize="small" />,
-    title: "Account",
+    title: "Profile",
   },
   {
     href: "/settings",
@@ -45,24 +66,18 @@ const items = [
     title: "Settings",
   },
   {
-    href: "/login",
-    icon: <LockIcon fontSize="small" />,
-    title: "Login",
-  },
-  {
-    href: "/register",
-    icon: <UserAddIcon fontSize="small" />,
-    title: "Register",
-  },
-  {
-    href: "/404",
-    icon: <XCircleIcon fontSize="small" />,
-    title: "Error",
+    href: "#",
+    icon: <Logout fontSize="small" />,
+    title: "Logout",
   },
 ];
 
-export const DashboardSidebar = (props: any) => {
-  const { open, onClose } = props;
+type Props = {
+  onClose: () => void;
+  open: boolean;
+};
+
+export const DashboardSidebar: React.FC<Props> = ({ onClose, open }) => {
   const theme = useTheme();
   const router = useRouter();
   const lgUp = useMediaQuery((theme: Theme) => theme?.breakpoints?.up("lg"), {
@@ -118,36 +133,6 @@ export const DashboardSidebar = (props: any) => {
               </Box>
             </NextLink>
           </Box>
-          {/* <Box sx={{ px: 2 }}>
-            <Box
-              sx={{
-                alignItems: "center",
-                backgroundColor: "rgba(255, 255, 255, 0.04)",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "space-between",
-                px: 3,
-                py: "11px",
-                borderRadius: 1,
-              }}
-            >
-              <div>
-                <Typography color="inherit" variant="subtitle1">
-                  Acme Inc
-                </Typography>
-                <Typography color="neutral.400" variant="body2">
-                  Your tier : Premium
-                </Typography>
-              </div>
-              <SelectorIcon
-                sx={{
-                  color: "neutral.500",
-                  width: 14,
-                  height: 14,
-                }}
-              />
-            </Box>
-          </Box> */}
         </div>
         <Divider
           sx={{
@@ -161,44 +146,6 @@ export const DashboardSidebar = (props: any) => {
           ))}
         </Box>
         <Divider sx={{ borderColor: "#2D3748" }} />
-        {/* <Box
-          sx={{
-            px: 2,
-            py: 3,
-          }}
-        >
-          <Typography color="neutral.100" variant="subtitle2">
-            Need more features?
-          </Typography>
-          <Typography color="neutral.500" variant="body2">
-            Check out our Pro solution template.
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              mt: 2,
-              mx: "auto",
-              width: "160px",
-              "& img": {
-                width: "100%",
-              },
-            }}
-          >
-            <img alt="Go to pro" src="/static/images/sidebar_pro.png" />
-          </Box>
-          <NextLink href="https://material-kit-pro-react.devias.io/" passHref>
-            <Button
-              color="secondary"
-              component="a"
-              endIcon={<OpenInNewIcon />}
-              fullWidth
-              sx={{ mt: 2 }}
-              variant="contained"
-            >
-              Pro Live Preview
-            </Button>
-          </NextLink>
-        </Box> */}
       </Box>
     </>
   );
@@ -240,9 +187,4 @@ export const DashboardSidebar = (props: any) => {
       {content}
     </Drawer>
   );
-};
-
-DashboardSidebar.propTypes = {
-  onClose: PropTypes.func,
-  open: PropTypes.bool,
 };

@@ -1,11 +1,10 @@
+import React from "react";
 import { Box, Breadcrumbs, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
-import React from "react";
-import { AdminDashboardLayout } from "../../layouts/adminLayout/AdminDashboardLayout";
 
-const AdminDashboard: React.FC = () => {
+const Category: React.FC = () => {
   return (
-    <AdminDashboardLayout>
+    <>
       <Box sx={{ py: 2, pl: 2 }}>
         <Breadcrumbs aria-label="breadcrumb">
           <Link href="/" passHref>
@@ -13,11 +12,16 @@ const AdminDashboard: React.FC = () => {
               Home
             </MuiLink>
           </Link>
-          <Typography color="text.primary">Admin</Typography>
+          <Link href="/admin" passHref>
+            <MuiLink underline="hover" color="inherit">
+              Admin
+            </MuiLink>
+          </Link>
+          <Typography color="text.primary">Categories</Typography>
         </Breadcrumbs>
       </Box>
-    </AdminDashboardLayout>
+    </>
   );
 };
 
-export default AdminDashboard;
+export default Category;

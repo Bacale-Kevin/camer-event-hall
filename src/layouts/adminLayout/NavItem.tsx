@@ -1,10 +1,15 @@
 import NextLink from "next/link";
 import { useRouter } from "next/router";
-import PropTypes from "prop-types";
 import { Box, Button, ListItem } from "@mui/material";
+import { EmotionJSX } from "@emotion/react/types/jsx-namespace";
 
-export const NavItem = (props: any) => {
-  const { href, icon, title, ...others } = props;
+type Props = {
+  href: string;
+  icon: EmotionJSX.Element;
+  title: string;
+};
+
+export const NavItem: React.FC<Props> = ({ href, title, icon }) => {
   const router = useRouter();
   const active = href ? router.pathname === href : false;
 
@@ -17,7 +22,6 @@ export const NavItem = (props: any) => {
         py: 0,
         px: 2,
       }}
-      {...others}
     >
       <NextLink href={href} passHref>
         <Button
@@ -48,10 +52,4 @@ export const NavItem = (props: any) => {
       </NextLink>
     </ListItem>
   );
-};
-
-NavItem.propTypes = {
-  href: PropTypes.string,
-  icon: PropTypes.node,
-  title: PropTypes.string,
 };
