@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import isEmail from "validator/lib/isEmail";
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 import cookie from "cookie";
 
 import prisma from "../../../../lib/prisma";
@@ -42,8 +42,13 @@ export default async function loginUser(req: ExtendedNextApiRequest, res: NextAp
 
       if (!isPassword) return res.status(400).send("Invalid login credentials");
 
-      const payload = { userId: user.id };
-      const token = await jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "7d" });
+      /***** CREATE TOKEN AND ASSIGN USERID AND ROLE AS PAYLOAD *****/
+      const payload = { userId: user.id, role: user.role };
+      const token = await new jose.SignJWT(payload)
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("7d")
+        .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
       res.setHeader(
         "Set-Cookie",
@@ -55,15 +60,6 @@ export default async function loginUser(req: ExtendedNextApiRequest, res: NextAp
           path: "/",
         })
       );
-
-      //   const userData = {
-      //     id: user.id,
-      //     name: user.name,
-      //     email: user.email,
-      //     profilePicUrl: user.profilePicUrl,
-      //     role: user.role,
-      //     emailVerified: user.emailVerified
-      //   }
 
       return res.status(200).json(token);
     }

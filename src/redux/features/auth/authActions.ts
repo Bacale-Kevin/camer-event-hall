@@ -31,3 +31,14 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const getLoggedInUser = createAsyncThunk(`/api/auth/me`, async () => {
+  try {
+    const { data } = await API.get(`/api/auth/me`);
+
+    return data;
+  } catch (error: any) {
+    console.log(error);
+    return error.response.data;
+  }
+});

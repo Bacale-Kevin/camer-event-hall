@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { IUser } from "./../../../types/user.types";
-import { signUpUser, loginUser } from "./authActions";
+import { signUpUser, loginUser, getLoggedInUser } from "./authActions";
 
 type UserData = {
   loading: boolean;
@@ -55,11 +55,32 @@ const authSlice = createSlice({
       state.isAuth = true;
       state.isError = false;
       state.data = action.payload;
-      state.errorMessage = ''
+      state.errorMessage = "";
 
       return state;
     });
     builder.addCase(loginUser.rejected, (state, action) => {
+      state.loading = false;
+      state.isError = true;
+      state.isAuth = false;
+      state.isSuccess = false;
+      state.errorMessage = action.payload as string;
+    });
+
+    /** GET LOGGEDIN USER **/
+    builder.addCase(getLoggedInUser.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getLoggedInUser.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isSuccess = true;
+      state.isAuth = true;
+      state.isError = false;
+      state.data = action.payload;
+
+      return state;
+    });
+    builder.addCase(getLoggedInUser.rejected, (state, action) => {
       state.loading = false;
       state.isError = true;
       state.isAuth = false;
