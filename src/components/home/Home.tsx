@@ -1,7 +1,7 @@
 import React from "react";
 
-import Layout from "../layouts/layout/Layout";
-import Hero from "./hero/Hero";
+import Layout from "../../layouts/layout/Layout";
+import Hero from "../hero/Hero";
 
 const Home: React.FC = () => {
   return (

@@ -1,6 +1,6 @@
 import type { GetServerSideProps, NextPage } from "next";
 import { Context } from "next-redux-wrapper";
-import Home from "../components/Home";
+import Home from "../components/home/Home";
 import { getLoggedInUser } from "../redux/features/auth/authActions";
 import { reduxWrapper } from "../redux/store";
 

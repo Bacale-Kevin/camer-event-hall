@@ -41,6 +41,8 @@ import {
   LogoutOutlined,
   ReviewsOutlined,
   SettingsOutlined,
+  SignalCellular0BarOutlined,
+  SignalCellularAltOutlined,
 } from "@mui/icons-material";
 
 type Props = {
@@ -526,14 +528,16 @@ const Header: React.FC<Props> = ({ onSidebarOpen }) => {
                       </Typography>
                     </Stack>
                   </MenuItem>
-                  <MenuItem onClick={handleCloseUserMenu}>
-                    <Stack direction="row" spacing={1}>
-                      <DashboardOutlined sx={{ color: theme.palette.grey[800] }} />
-                      <Typography textAlign="center" color={theme.palette.grey[800]}>
-                        Dashboard
-                      </Typography>
-                    </Stack>
-                  </MenuItem>
+                  <Link href="/admin">
+                    <MenuItem LinkComponent="a" onClick={handleCloseUserMenu}>
+                      <Stack direction="row" spacing={1}>
+                        <SignalCellularAltOutlined sx={{ color: theme.palette.grey[800] }} />
+                        <Typography textAlign="center" color={theme.palette.grey[800]}>
+                          Dashboard
+                        </Typography>
+                      </Stack>
+                    </MenuItem>
+                  </Link>
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Stack direction="row" spacing={1}>
                       <BookOnlineOutlined sx={{ color: theme.palette.grey[800] }} />
