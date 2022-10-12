@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import * as Yup from "yup";
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required("please enter name").min(3, "name to short").max(25, "name to long"),
+  name: Yup.string().required("please enter name").min(2, "name to short").max(25, "name to long"),
 });
 
 type Props = {
