@@ -34,6 +34,12 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
       if (!name || name === undefined || !id || id === undefined)
         return res.status(400).send("Empty fields are not allowed");
 
+      const ifNameExist = await prisma.category.findUnique({ where: { name } });
+
+      if (ifNameExist) {
+        return res.status(400).send("This category name already exist please create another one");
+      }
+
       const data = await prisma.category.update({
         where: { id },
         data: { name },
@@ -53,7 +59,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
         select: { id: true, name: true, createdAt: true },
       });
 
-      return res.status(201).send(deletedEventCat);
+      return res.status(201).json(deletedEventCat);
     } catch (error) {
       console.log(error);
       return res.status(500).send("Server error");

@@ -22,11 +22,11 @@ const CategoryComponent: React.FC = () => {
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
     try {
-      const response = await dispatch(createCategory(name)).unwrap();
-      console.log(response);
-      /**@Todo show toast notification */
-    } catch (error) {
-      /**@Todo show toast notification */
+      const response: any = await dispatch(createCategory(name)).unwrap();
+
+      toast.success(response.message);
+    } catch (error: any) {
+      toast.error(error);
     }
   };
 
@@ -35,15 +35,28 @@ const CategoryComponent: React.FC = () => {
     exitEditingMode,
     values,
   }) => {
-    dispatch(updateCategory(values)).unwrap();
-    exitEditingMode();
+    try {
+      await dispatch(updateCategory(values)).unwrap();
+      exitEditingMode();
+      toast.success("Task completed successfully");
+    } catch (error: any) {
+      toast.error(error);
+    }
   };
 
   /***** DELETE *****/
   const handleDeleteRow = useCallback(
-    (row: MRT_Row<Category>) => {
-      const { id } = row.original;
-      dispatch(deleteCategory(id)).unwrap();
+    async (row: MRT_Row<Category>) => {
+      if (window.confirm("Do really want to delete this row ? is action can not be undo once confirm!")) {
+        try {
+          const { id } = row.original;
+          await dispatch(deleteCategory(id)).unwrap();
+
+          toast.success("Task completed successfully");
+        } catch (error: any) {
+          toast.error(error);
+        }
+      }
     },
     [dispatch]
   );
@@ -122,7 +135,6 @@ const CategoryComponent: React.FC = () => {
                 </Button>
               )}
             />
-            <Alert severity="info">No data! click on the button at the top left to create one</Alert>
 
             <CreateCategoryModal
               columns={columns}
