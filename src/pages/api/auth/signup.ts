@@ -38,7 +38,7 @@ export default async function signupUser(req: ExtentendedNextApiRequest, res: Ne
 
     return res.status(201).send("Account created successfully");
   } catch (error: any) {
-    console.log(error);
+    console.log(error.message);
     return res.status(500).send(`${error.message}`);
   }
 }
