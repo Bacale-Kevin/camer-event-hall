@@ -35,15 +35,28 @@ const CategoryComponent: React.FC = () => {
     exitEditingMode,
     values,
   }) => {
-    dispatch(updateCategory(values)).unwrap();
-    exitEditingMode();
+    try {
+      await dispatch(updateCategory(values)).unwrap();
+      exitEditingMode();
+      toast.success("Task completed successfully");
+    } catch (error: any) {
+      toast.error(error);
+    }
   };
 
   /***** DELETE *****/
   const handleDeleteRow = useCallback(
-    (row: MRT_Row<Category>) => {
-      const { id } = row.original;
-      dispatch(deleteCategory(id)).unwrap();
+    async (row: MRT_Row<Category>) => {
+      if (window.confirm("Do really want to delete this row ? is action can not be undo once confirm!")) {
+        try {
+          const { id } = row.original;
+          await dispatch(deleteCategory(id)).unwrap();
+
+          toast.success("Task completed successfully");
+        } catch (error: any) {
+          toast.error(error);
+        }
+      }
     },
     [dispatch]
   );

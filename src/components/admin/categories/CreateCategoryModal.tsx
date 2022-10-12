@@ -44,13 +44,13 @@ const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
             <Grid container>
               <Grid item xs={12}>
                 <TextField
+                  autoFocus
                   label="Name"
                   type="text"
                   size="small"
                   variant="standard"
                   id="name"
                   required
-                  autoFocus
                   {...register("name")}
                   helperText={errors.name?.message}
                   error
