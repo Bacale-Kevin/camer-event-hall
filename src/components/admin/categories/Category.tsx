@@ -22,11 +22,11 @@ const CategoryComponent: React.FC = () => {
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
     try {
-      const response = await dispatch(createCategory(name)).unwrap();
-      console.log(response);
-      /**@Todo show toast notification */
-    } catch (error) {
-      /**@Todo show toast notification */
+      const response: any = await dispatch(createCategory(name)).unwrap();
+
+      toast.success(response.message);
+    } catch (error: any) {
+      toast.error(error);
     }
   };
 

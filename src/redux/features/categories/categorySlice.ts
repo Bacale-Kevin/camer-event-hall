@@ -46,7 +46,7 @@ const categorySlice = createSlice({
       state.loading = false;
       state.isSuccess = true;
       state.isError = false;
-      state?.categories?.push(action.payload.createdCategory);
+      state?.categories?.unshift(action.payload.createdCategory);
       state.successMessage = action.payload.message;
 
       return state;
