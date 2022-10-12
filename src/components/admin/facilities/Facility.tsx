@@ -7,13 +7,13 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 
 import { AppDispatch, AppState } from "../../../redux/store";
-import { Category } from "@prisma/client";
-import { createCategory, deleteCategory, updateCategory } from "../../../redux/features/categories/categoriesActions";
-import CreateCategoryModal from "./CreateCategoryModal";
+import { Facility } from "@prisma/client";
+import { createFacility, deleteFacility, updateFacility } from "../../../redux/features/facilities/faciltiesActions";
+import CreateFacilityModal from "./CreateFacilityModal";
 
-const CategoryComponent: React.FC = () => {
+const FacilityComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { categories, loading } = useSelector((state: AppState) => state.category);
+  const { facilities, loading } = useSelector((state: AppState) => state.facility);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -22,7 +22,7 @@ const CategoryComponent: React.FC = () => {
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
     try {
-      const response: any = await dispatch(createCategory(name)).unwrap();
+      const response: any = await dispatch(createFacility(name)).unwrap();
 
       toast.success(response.message);
     } catch (error: any) {
@@ -31,12 +31,12 @@ const CategoryComponent: React.FC = () => {
   };
 
   /***** EDIT *****/
-  const handleUpdateSave: MaterialReactTableProps<Category>["onEditingRowSave"] = async ({
+  const handleUpdateSave: MaterialReactTableProps<Facility>["onEditingRowSave"] = async ({
     exitEditingMode,
     values,
   }) => {
     try {
-      await dispatch(updateCategory(values)).unwrap();
+      await dispatch(updateFacility(values)).unwrap();
       exitEditingMode();
       toast.success("Task completed successfully");
     } catch (error: any) {
@@ -46,11 +46,11 @@ const CategoryComponent: React.FC = () => {
 
   /***** DELETE *****/
   const handleDeleteRow = useCallback(
-    async (row: MRT_Row<Category>) => {
-      if (window.confirm("Do really want to delete this row ? is action can not be undo once confirm!")) {
+    async (row: MRT_Row<Facility>) => {
+      if (window.confirm("Do really want to delete this row ? this action can not be undo once confirm!")) {
         try {
           const { id } = row.original;
-          await dispatch(deleteCategory(id)).unwrap();
+          await dispatch(deleteFacility(id)).unwrap();
 
           toast.success("Task completed successfully");
         } catch (error: any) {
@@ -61,7 +61,7 @@ const CategoryComponent: React.FC = () => {
     [dispatch]
   );
 
-  const columns = useMemo<MRT_ColumnDef<Category>[]>(
+  const columns = useMemo<MRT_ColumnDef<Facility>[]>(
     () => [
       {
         accessorKey: "id", //access nested data with dot notation
@@ -100,14 +100,14 @@ const CategoryComponent: React.FC = () => {
                 Admin
               </MuiLink>
             </Link>
-            <Typography color="text.primary">Facilities</Typography>
+            <Typography color="text.primary">Categories</Typography>
           </Breadcrumbs>
         </Box>
-        {!loading && categories?.length === 0 ? (
+        {!loading && facilities?.length === 0 ? (
           <>
             <MaterialReactTable
               columns={columns}
-              data={categories}
+              data={facilities}
               enableEditing
               onEditingRowSave={handleUpdateSave}
               enableRowActions
@@ -136,7 +136,7 @@ const CategoryComponent: React.FC = () => {
               )}
             />
 
-            <CreateCategoryModal
+            <CreateFacilityModal
               columns={columns}
               open={createModalOpen}
               onClose={() => setCreateModalOpen(false)}
@@ -147,7 +147,7 @@ const CategoryComponent: React.FC = () => {
           <>
             <MaterialReactTable
               columns={columns}
-              data={categories}
+              data={facilities}
               enableEditing
               onEditingRowSave={handleUpdateSave}
               enableRowActions
@@ -176,7 +176,7 @@ const CategoryComponent: React.FC = () => {
               )}
             />
 
-            <CreateCategoryModal
+            <CreateFacilityModal
               columns={columns}
               open={createModalOpen}
               onClose={() => setCreateModalOpen(false)}
@@ -191,4 +191,4 @@ const CategoryComponent: React.FC = () => {
   }
 };
 
-export default CategoryComponent;
+export default FacilityComponent;

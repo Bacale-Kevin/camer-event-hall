@@ -26,9 +26,9 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
   }
 
   if (req.method === "POST") {
+    const { name } = req.body;
+    console.log("Name --> ", name);
     try {
-      const { name } = req.body;
-
       if (name === undefined || name === "" || name === null) {
         return res.status(400).send(`Empty fields not allowed`);
       }

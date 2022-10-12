@@ -9,7 +9,7 @@ export const createCategory = createAsyncThunk(
   async (name: string, { rejectWithValue, fulfillWithValue }) => {
     try {
       const { data } = await API.post(`/api/categories`, { name });
-
+      
       return fulfillWithValue(data);
     } catch (error: any) {
       return rejectWithValue(error.response.data);

@@ -1,5 +1,6 @@
 import { Category } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
+import * as dayjs from "dayjs";
 
 import prisma from "../../../../lib/prisma";
 
@@ -44,7 +45,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
         },
       });
 
-      return res.status(201).json({ createdCategory, message: "Category created successfully"});
+      return res.status(201).json({ createdCategory, message: "Category created successfully" });
     } catch (error) {
       console.log(error);
       return res.status(500).send("Server error");

@@ -2,10 +2,12 @@ import { createWrapper, HYDRATE } from "next-redux-wrapper";
 import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
 import categoryReducer from "./features/categories/categorySlice";
+import facilityReducer from "./features/facilities/facilitySlice";
 
 const combinedReducer = combineReducers({
   auth: authReducer,
   category: categoryReducer,
+  facility: facilityReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
