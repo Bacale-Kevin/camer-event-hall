@@ -1,6 +1,4 @@
-import { Category } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import * as dayjs from "dayjs";
 
 import prisma from "../../../../lib/prisma";
 
@@ -13,14 +11,14 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
   if (req.method === "GET") {
     try {
-      const categories = await prisma.category.findMany({
+      const facilities = await prisma.facility.findMany({
         select: { id: true, name: true, createdAt: true },
         orderBy: {
           createdAt: "desc",
         },
       });
 
-      return res.status(200).json(categories);
+      return res.status(200).json(facilities);
     } catch (error) {
       console.log(error);
       return res.status(500).send("Server error");
@@ -28,24 +26,24 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
   }
 
   if (req.method === "POST") {
+    const { name } = req.body;
+    console.log("Name --> ", name);
     try {
-      const { name } = req.body;
-
       if (name === undefined || name === "" || name === null) {
         return res.status(400).send(`Empty fields not allowed`);
       }
 
-      const category = await prisma.category.findFirst({ where: { name: name.toLowerCase() } });
+      const facility = await prisma.facility.findFirst({ where: { name: name.toLowerCase() } });
 
-      if (category) return res.status(400).send(`Category ${category.name} already exist please create another one`);
+      if (facility) return res.status(400).send(`Facility ${facility.name} already exist please create another one`);
 
-      const createdCategory = await prisma.category.create({
+      const createdFacility = await prisma.facility.create({
         data: {
           name: name.toLowerCase(),
         },
       });
 
-      return res.status(201).json({ createdCategory, message: "Category created successfully" });
+      return res.status(201).json({ createdFacility, message: "Facility created successfully" });
     } catch (error) {
       console.log(error);
       return res.status(500).send("Server error");

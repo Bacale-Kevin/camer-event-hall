@@ -36,9 +36,9 @@ const items = [
     title: "Categories",
   },
   {
-    href: "/admin/amenities",
+    href: "/admin/facilities",
     icon: <ArtTrackRounded fontSize="small" />,
-    title: "Amenities",
+    title: "Facilities",
   },
   {
     href: "/admin/venues",
