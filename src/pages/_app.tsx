@@ -4,12 +4,10 @@ import Head from "next/head";
 import { AppProps } from "next/app";
 import CssBaseline from "@mui/material/CssBaseline";
 import { EmotionCache } from "@emotion/react";
-import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { AppDispatch, reduxWrapper } from "../redux/store";
 import createEmotionCache from "../../src/createEmotionCache";
 import PageProvider from "../styles/theme/helpers/PageProvider/PageProvider";
-import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 
@@ -28,6 +26,7 @@ function MyApp(props: MyAppProps) {
   // redux stuff
   const { Component, emotionCache = clientSideEmotionCache, pageProps, ...rest } = props;
 
+  /*** On Every Route Change Get The LoggedIn User ****/
   useEffect(() => {
     if (router.pathname === "/") {
       const fetchAuthUser = async () => {
@@ -37,24 +36,17 @@ function MyApp(props: MyAppProps) {
     }
   }, [router.pathname]);
 
-  const { store } = reduxWrapper.useWrappedStore(rest);
-  if (typeof window === "undefined") {
-    return <></>;
-  } else {
-    return (
-      <PageProvider emotionCache={emotionCache}>
-        <Provider store={store}>
-          <Head>
-            <meta name="viewport" content="initial-scale=1, width=device-width" />
-          </Head>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <Toaster toastOptions={{ duration: 5000 }} />
-          <Component {...pageProps} />
-        </Provider>
-      </PageProvider>
-    );
-  }
+  return (
+    <PageProvider emotionCache={emotionCache}>
+      <Head>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
+      </Head>
+      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+      <CssBaseline />
+      <Toaster toastOptions={{ duration: 5000 }} />
+      <Component {...pageProps} />
+    </PageProvider>
+  );
 }
 
 export default reduxWrapper.withRedux(MyApp);
