@@ -100,7 +100,7 @@ const CategoryComponent: React.FC = () => {
                 Admin
               </MuiLink>
             </Link>
-            <Typography color="text.primary">Facilities</Typography>
+            <Typography color="text.primary">Categories</Typography>
           </Breadcrumbs>
         </Box>
         {!loading && categories?.length === 0 ? (
