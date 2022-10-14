@@ -2,7 +2,7 @@ import { Venue } from '@prisma/client';
 import { Review } from '@prisma/client';
 import { Booking } from '@prisma/client';
 import { Facility } from '@prisma/client';
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IVenue } from "../../../types/venue.types";
 
 import { addVenue, deleteVenue, getVenues, updateVenue, getVenue } from "./venueActions";
@@ -80,11 +80,11 @@ const venueTypesSlice = createSlice({
     builder.addCase(addVenue.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(addVenue.fulfilled, (state, action) => {
+    builder.addCase(addVenue.fulfilled, (state, action: PayloadAction<any>) => {
       state.loading = false;
       state.isSuccess = true;
       state.isError = false;
-      state.venues.unshift(action.payload);
+      state?.venues?.unshift(action.payload);
 
       return state;
     });
@@ -103,7 +103,7 @@ const venueTypesSlice = createSlice({
       state.loading = false;
       state.isSuccess = true;
       state.isError = false;
-      state.venues = state.venues.map((item) => (item.id === action.payload.id ? action.payload : item));
+      state.venues = state.venues?.map((item) => (item.id === action.payload.id ? action.payload : item));
 
       return state;
     });
@@ -123,7 +123,7 @@ const venueTypesSlice = createSlice({
       state.isSuccess = true;
       state.isError = false;
       state.errorMessage = "";
-      state.venues = state.venues.filter((item) => item.id !== action.payload.id);
+      state.venues = state.venues?.filter((item) => item.id !== action.payload.id);
 
       return state;
     });
