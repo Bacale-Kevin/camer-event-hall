@@ -89,7 +89,7 @@ const Login: React.FC = () => {
 
                       <TextField
                         {...register("email")}
-                        id="standard-basic"
+                        id="standard-basic-pass"
                         autoFocus
                         label="Email"
                         variant="outlined"
@@ -104,7 +104,7 @@ const Login: React.FC = () => {
                         <OutlinedInput
                           {...register("password")}
                           error={errors.password ? true : false}
-                          id="password"
+                          id="login-password"
                           type={showPassword ? "text" : "password"}
                           label="Password"
                           fullWidth

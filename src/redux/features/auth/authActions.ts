@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk(
   `/api/auth/login`,
   async (loginFormData: loginFormInputs, { rejectWithValue, fulfillWithValue }) => {
     try {
-      const { data } = await API.post(`/api/auth/login`, loginFormData);
+      const { data } = await API.post(`/api/auth/login`, loginFormData,);
 
       return fulfillWithValue(data);
     } catch (error: any) {
