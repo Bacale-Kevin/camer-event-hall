@@ -1,10 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import isEmail from "validator/lib/isEmail";
-import NextCors from "nextjs-cors";
 import * as jose from "jose";
 import cookie from "cookie";
-import initMiddleware from "../../../../lib/init-middleware";
 
 import prisma from "../../../../lib/prisma";
 import { User } from "@prisma/client";
@@ -21,14 +19,7 @@ type Response = {
   user: User;
 };
 
-export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse<Response | string>) {
-  // await NextCors(req, res, {
-  //   // Options
-  //   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-  //   origin: "*",
-  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  // });
-
+export default async function loginUser(req: ExtendedNextApiRequest, res: NextApiResponse<Response | string>) {
   if (req.method === "POST") {
     try {
       const { email, password } = req.body;
@@ -75,6 +66,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
       console.log(error);
       return res.status(500).send("Server error");
     }
+  } else {
+    return res.status(401).send("No authorized to hit this endpoint");
   }
-  return res.send("Hello NextJs Cors!");
 }
