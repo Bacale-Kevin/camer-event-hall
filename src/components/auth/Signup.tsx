@@ -98,7 +98,7 @@ const Signup: React.FC = () => {
                       <TextField
                         {...register("name")}
                         autoFocus
-                        id="signup-standard-basic"
+                        id="signup-standard-basic name"
                         label="Full Name"
                         variant="outlined"
                         size="small"
