@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
-import NextCors from "nextjs-cors";
 import isEmail from "validator/lib/isEmail";
 
 import prisma from "../../../../lib/prisma";
