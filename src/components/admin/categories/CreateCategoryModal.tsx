@@ -49,7 +49,7 @@ const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                   type="text"
                   size="small"
                   variant="standard"
-                  id="name"
+                  id="category-name"
                   required
                   {...register("name")}
                   helperText={errors.name?.message}

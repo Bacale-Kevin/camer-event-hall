@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import isEmail from "validator/lib/isEmail";
+import NextCors from "nextjs-cors";
 import * as jose from "jose";
 import cookie from "cookie";
+import initMiddleware from "../../../../lib/init-middleware";
 
 import prisma from "../../../../lib/prisma";
 import { User } from "@prisma/client";
@@ -19,9 +21,16 @@ type Response = {
   user: User;
 };
 
-export default async function loginUser(req: ExtendedNextApiRequest, res: NextApiResponse<Response | string>) {
-  try {
-    if (req.method === "POST") {
+export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse<Response | string>) {
+  // await NextCors(req, res, {
+  //   // Options
+  //   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  //   origin: "*",
+  //   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  // });
+
+  if (req.method === "POST") {
+    try {
       const { email, password } = req.body;
 
       //validations
@@ -62,9 +71,10 @@ export default async function loginUser(req: ExtendedNextApiRequest, res: NextAp
       );
 
       return res.status(200).json(token);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send("Server error");
     }
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send("Server error");
   }
+  return res.send("Hello NextJs Cors!");
 }

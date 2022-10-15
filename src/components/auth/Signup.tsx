@@ -98,7 +98,7 @@ const Signup: React.FC = () => {
                       <TextField
                         {...register("name")}
                         autoFocus
-                        id="standard-basic"
+                        id="signup-standard-basic"
                         label="Full Name"
                         variant="outlined"
                         size="small"
@@ -109,7 +109,7 @@ const Signup: React.FC = () => {
 
                       <TextField
                         {...register("email")}
-                        id="standard-basic"
+                        id="signup-standard-basic"
                         label="Email"
                         variant="outlined"
                         size="small"
@@ -123,7 +123,7 @@ const Signup: React.FC = () => {
                         <OutlinedInput
                           {...register("password")}
                           error={errors.password ? true : false}
-                          id="password"
+                          id="signup-password"
                           type={showPassword ? "text" : "password"}
                           label="Password"
                           fullWidth
@@ -155,7 +155,7 @@ const Signup: React.FC = () => {
                         <OutlinedInput
                           {...register("confirmPassword")}
                           error={errors.confirmPassword ? true : false}
-                          id="confirm-password"
+                          id="signup-confirm-password"
                           type={showPassword ? "text" : "password"}
                           label="confirm Password"
                           fullWidth

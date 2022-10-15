@@ -43,10 +43,10 @@ const Hero: React.FC = () => {
               <Grid container alignItems="center" justifyContent="center" spacing={2}>
                 <Grid item md={5}>
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
-                    <InputLabel id="demo-simple-select-standard-label">Event Type</InputLabel>
+                    <InputLabel id="demo-simple-select-standard-label-type">Event Type</InputLabel>
                     <Select
                       fullWidth
-                      labelId="demo-simple-select-standard-label"
+                      labelId="demo-simple-select-standard-label-type"
                       id="demo-simple-select-standard"
                       value={age}
                       onChange={handleChange}
@@ -63,11 +63,11 @@ const Hero: React.FC = () => {
                 </Grid>
                 <Grid item md={5}>
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 120, width: "100%" }}>
-                    <InputLabel id="demo-simple-select-standard-label">City</InputLabel>
+                    <InputLabel id="demo-simple-select-standard-label-city">City</InputLabel>
                     <Select
                       fullWidth
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
+                      labelId="demo-simple-select-standard-label-city-label"
+                      id="demo-simple-select-standard-city"
                       value={age}
                       onChange={handleChange}
                       label="Age"
