@@ -8,7 +8,12 @@ import toast from "react-hot-toast";
 
 import { AppDispatch, AppState } from "../../../redux/store";
 import { Facility } from "@prisma/client";
-import { createFacility, deleteFacility, updateFacility } from "../../../redux/features/facilities/faciltiesActions";
+import {
+  createFacility,
+  deleteFacility,
+  getFacilities,
+  updateFacility,
+} from "../../../redux/features/facilities/faciltiesActions";
 import CreateFacilityModal from "./CreateFacilityModal";
 
 const FacilityComponent: React.FC = () => {
@@ -18,6 +23,10 @@ const FacilityComponent: React.FC = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    dispatch(getFacilities());
+  }, [dispatch]);
 
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
@@ -103,11 +112,14 @@ const FacilityComponent: React.FC = () => {
             <Typography color="text.primary">Facilities</Typography>
           </Breadcrumbs>
         </Box>
-        {!loading && facilities?.length === 0 ? (
+
+        {/* show skeleton loader  */}
+        {loading ? (
           <>
             <MaterialReactTable
               columns={columns}
-              data={facilities}
+              data={[]}
+              state={{ isLoading: loading }}
               enableEditing
               onEditingRowSave={handleUpdateSave}
               enableRowActions

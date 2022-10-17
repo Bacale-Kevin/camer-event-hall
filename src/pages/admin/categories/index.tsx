@@ -1,9 +1,7 @@
-import { GetServerSideProps, NextPage } from "next";
-import { reduxWrapper } from "../../../redux/store";
+import { NextPage } from "next";
 
 import { AdminDashboardLayout } from "../../../layouts/adminLayout/AdminDashboardLayout";
 import Category from "../../../components/admin/categories/Category";
-import { getCategories } from "../../../redux/features/categories/categoriesActions";
 
 const CategoryPage: NextPage = () => {
   return (
@@ -15,6 +13,7 @@ const CategoryPage: NextPage = () => {
 
 /**
  * * These code is commented because it results to a vercel timeout error in production 
+ * * Client side fetching will be used to avoid running into this error on production
  */
 // export const getServerSideProps: GetServerSideProps = reduxWrapper.getServerSideProps((store) => async () => {
 //   try {

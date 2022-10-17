@@ -1,15 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import {
-  Box,
-  Breadcrumbs,
-  Link as MuiLink,
-  Typography,
-  Button,
-  IconButton,
-  Alert,
-  Tooltip,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Breadcrumbs, Link as MuiLink, Typography, Button, IconButton, Tooltip } from "@mui/material";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -123,7 +113,8 @@ const CategoryComponent: React.FC = () => {
           </Breadcrumbs>
         </Box>
 
-        {loading && (
+        {/* show skeleton loader  */}
+        {loading ? (
           <>
             <MaterialReactTable
               columns={columns}
@@ -152,49 +143,7 @@ const CategoryComponent: React.FC = () => {
               )}
               renderTopToolbarCustomActions={() => (
                 <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                  Create New Facility
-                </Button>
-              )}
-            />
-
-            <CreateCategoryModal
-              columns={columns}
-              open={createModalOpen}
-              onClose={() => setCreateModalOpen(false)}
-              onSubmit={handleCreateNewRow}
-            />
-          </>
-        )}
-        {!loading && categories?.length === 0 ? (
-          <>
-            <MaterialReactTable
-              columns={columns}
-              data={categories}
-              state={{ isLoading: loading }}
-              enableEditing
-              onEditingRowSave={handleUpdateSave}
-              enableRowActions
-              renderRowActions={({ row, table }) => (
-                <Box sx={{ display: "flex", gap: "1rem" }}>
-                  <Tooltip arrow placement="left" title="Edit">
-                    <IconButton
-                      onClick={() => {
-                        return table.setEditingRow(row);
-                      }}
-                    >
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip arrow placement="right" title="Delete">
-                    <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                      <Delete />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-              renderTopToolbarCustomActions={() => (
-                <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                  Create New Facility
+                  Create New Category
                 </Button>
               )}
             />
@@ -234,7 +183,7 @@ const CategoryComponent: React.FC = () => {
               )}
               renderTopToolbarCustomActions={() => (
                 <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                  Create New Facility
+                  Create New Category
                 </Button>
               )}
             />
