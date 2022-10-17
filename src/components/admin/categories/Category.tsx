@@ -1,5 +1,15 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
-import { Box, Breadcrumbs, Link as MuiLink, Typography, Button, IconButton, Alert, Tooltip } from "@mui/material";
+import {
+  Box,
+  Breadcrumbs,
+  Link as MuiLink,
+  Typography,
+  Button,
+  IconButton,
+  Alert,
+  Tooltip,
+  CircularProgress,
+} from "@mui/material";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +18,12 @@ import toast from "react-hot-toast";
 
 import { AppDispatch, AppState } from "../../../redux/store";
 import { Category } from "@prisma/client";
-import { createCategory, deleteCategory, updateCategory } from "../../../redux/features/categories/categoriesActions";
+import {
+  createCategory,
+  deleteCategory,
+  getCategories,
+  updateCategory,
+} from "../../../redux/features/categories/categoriesActions";
 import CreateCategoryModal from "./CreateCategoryModal";
 
 const CategoryComponent: React.FC = () => {
@@ -18,6 +33,10 @@ const CategoryComponent: React.FC = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, [dispatch]);
 
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
@@ -103,11 +122,55 @@ const CategoryComponent: React.FC = () => {
             <Typography color="text.primary">Categories</Typography>
           </Breadcrumbs>
         </Box>
+
+        {loading && (
+          <>
+            <MaterialReactTable
+              columns={columns}
+              data={[]}
+              state={{ isLoading: loading }}
+              enableEditing
+              onEditingRowSave={handleUpdateSave}
+              enableRowActions
+              renderRowActions={({ row, table }) => (
+                <Box sx={{ display: "flex", gap: "1rem" }}>
+                  <Tooltip arrow placement="left" title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        return table.setEditingRow(row);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip arrow placement="right" title="Delete">
+                    <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              renderTopToolbarCustomActions={() => (
+                <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
+                  Create New Facility
+                </Button>
+              )}
+            />
+
+            <CreateCategoryModal
+              columns={columns}
+              open={createModalOpen}
+              onClose={() => setCreateModalOpen(false)}
+              onSubmit={handleCreateNewRow}
+            />
+          </>
+        )}
         {!loading && categories?.length === 0 ? (
           <>
             <MaterialReactTable
               columns={columns}
               data={categories}
+              state={{ isLoading: loading }}
               enableEditing
               onEditingRowSave={handleUpdateSave}
               enableRowActions

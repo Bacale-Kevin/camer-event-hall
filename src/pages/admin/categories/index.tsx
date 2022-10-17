@@ -13,21 +13,24 @@ const CategoryPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = reduxWrapper.getServerSideProps((store) => async () => {
-  try {
-    await store.dispatch<any>(getCategories());
+/**
+ * * These code is commented because it results to a vercel timeout error in production 
+ */
+// export const getServerSideProps: GetServerSideProps = reduxWrapper.getServerSideProps((store) => async () => {
+//   try {
+//     await store.dispatch<any>(getCategories());
 
-    return {
-      props: {},
-    };
-  } catch (error: any) {
-    console.log("ERROR", error);
-    return {
-      props: {
-        error: error.message,
-      },
-    };
-  }
-});
+//     return {
+//       props: {},
+//     };
+//   } catch (error: any) {
+//     console.log("ERROR", error);
+//     return {
+//       props: {
+//         error: error.message,
+//       },
+//     };
+//   }
+// });
 
 export default CategoryPage;
