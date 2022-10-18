@@ -3,10 +3,12 @@ import { MRT_ColumnDef } from "material-react-table";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import * as Yup from "yup";
+import ImageUploading, { ImageListType } from "react-images-uploading";
 import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,16 +19,20 @@ import {
   FormHelperText,
   FormLabel,
   Grid,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
+  Stack,
   Switch,
   TextField,
 } from "@mui/material";
 import { VenueType } from "../../../types/venue.types";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/store";
-import { Facility } from "@prisma/client";
+import { Clear, Edit, FileUpload } from "@mui/icons-material";
+import Image from "next/image";
+import axios from "axios";
 
 type Props = {
   columns: MRT_ColumnDef<VenueType>[];
@@ -63,11 +69,14 @@ const validationSchema = Yup.object().shape({
     .nullable()
     .optional(),
   categoryId: Yup.string().required("please select a category"),
+  imagesUrl: Yup.array(),
   facilities: Yup.array(),
 });
 
 const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, inputRef }) => {
-  const [checkBoxValue, setCheckBoxValue] = useState<Facility[]>([]);
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const maxNumber = 10;
   const { categories } = useSelector((state: AppState) => state.category);
   const { facilities } = useSelector((state: AppState) => state.facility);
   const {
@@ -75,15 +84,41 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     handleSubmit,
     reset,
     control,
-    getValues,
     formState: { errors },
   } = useForm<VenueType>({ resolver: yupResolver(validationSchema), mode: "all" });
 
-  const onSubmitHandler: SubmitHandler<VenueType> = (data) => {
-    console.log(data);
-    // onSubmit(data);
+  const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
+    try {
+      setLoading(true);
+      if (images.length) {
+        const files = images.map((media: any) => media?.file);
+
+        for (const file of files) {
+          const form = new FormData();
+          form.append("file", file);
+          form.append("upload_preset", "wee-connect");
+          form.append("cloud_name", "bacale");
+
+          const payload = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL!, form);
+          console.log("payload --> ", payload.data.url);
+          data.imagesUrl?.push(payload.data.url);
+          console.log("url --> ", data?.imagesUrl);
+          setLoading(false);
+        }
+        console.log(data);
+      }
+    } catch (error: any) {
+      setLoading(false);
+      console.log(error.message);
+    }
+    // console.log(data);
     // reset();
     // onClose();
+  };
+
+  /***** HANDLE MEDIA CHANGE ******/
+  const handleImageChange = (imagesList: ImageListType) => {
+    setImages(imagesList as never[]);
   };
 
   return (
@@ -93,6 +128,7 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
           <DialogTitle textAlign="center">Create Facility</DialogTitle>
           <DialogContent>
             <Grid container spacing={2}>
+              {/* name */}
               <Grid item xs={4}>
                 <TextField
                   autoFocus
@@ -109,6 +145,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   inputRef={inputRef}
                 />
               </Grid>
+
+              {/* city */}
               <Grid item xs={4}>
                 <TextField
                   fullWidth
@@ -123,6 +161,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.city ? true : false}
                 />
               </Grid>
+
+              {/* location */}
               <Grid item xs={4}>
                 <TextField
                   fullWidth
@@ -137,6 +177,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.location ? true : false}
                 />
               </Grid>
+
+              {/* price */}
               <Grid item xs={4}>
                 <TextField
                   fullWidth
@@ -151,6 +193,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.price ? true : false}
                 />
               </Grid>
+
+              {/* longitude */}
               <Grid item xs={4}>
                 <TextField
                   fullWidth
@@ -164,6 +208,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.longitude ? true : false}
                 />
               </Grid>
+
+              {/* latitude */}
               <Grid item xs={4}>
                 <TextField
                   fullWidth
@@ -177,6 +223,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.latitude ? true : false}
                 />
               </Grid>
+
+              {/* capacity */}
               <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -191,6 +239,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.guestCapacity ? true : false}
                 />
               </Grid>
+
+              {/* category */}
               <Grid item xs={6}>
                 <FormControl fullWidth className="custom_select" error={errors.categoryId ? true : false}>
                   <InputLabel id="Company-select-label" className="mb-2">
@@ -239,12 +289,16 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   error={errors.description ? true : false}
                 />
               </Grid>
+
+              {/* switch */}
               <Grid item md={4} sx={{ py: 2, mt: 2 }}>
                 <FormGroup>
                   <FormControlLabel control={<Switch {...register("isVerified")} />} label="Is Verified" />
                 </FormGroup>
               </Grid>
               <Grid item xs={8} />
+
+              {/* facilities */}
               <Grid item xs={12}>
                 <Grid container justifyContent="space-between">
                   <FormControl sx={{ m: 0 }} component="fieldset" variant="standard">
@@ -294,12 +348,72 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   </FormControl>
                 </Grid>
               </Grid>
+
+              {/* Media */}
+              <Grid container sx={{ mx: 2, py: 3 }}>
+                <Grid item xs={12}>
+                  <ImageUploading multiple value={images} onChange={handleImageChange} maxNumber={maxNumber}>
+                    {({
+                      imageList,
+                      onImageUpload,
+                      onImageRemoveAll,
+                      onImageUpdate,
+                      onImageRemove,
+                      isDragging,
+                      dragProps,
+                    }) => (
+                      // write your building UI
+                      <div className="upload__image-wrapper">
+                        <Button
+                          endIcon={<FileUpload />}
+                          variant="contained"
+                          color="inherit"
+                          hidden
+                          sx={{ textTransform: "capitalize", py: 3, px: 3, border: "1px dashed" }}
+                          style={isDragging ? { color: "red" } : undefined}
+                          onClick={onImageUpload}
+                          {...dragProps}
+                        >
+                          Click or Drop Images here
+                          {/* <input type="file" multiple hidden {...register("imagesUrl")} /> */}
+                        </Button>
+                        &nbsp;
+                        <Button
+                          endIcon={<Clear />}
+                          color="secondary"
+                          sx={{ textTransform: "capitalize" }}
+                          onClick={onImageRemoveAll}
+                        >
+                          Remove all images
+                        </Button>
+                        <Grid container className="image-item">
+                          {imageList.map((image, i) => (
+                            <Grid item sm={2} key={i} sx={{ mt: 2 }}>
+                              <Image src={image.dataURL!} alt="" width={80} height={80} />
+                              <Stack direction="row">
+                                <IconButton aria-label="delete" onClick={() => onImageUpdate(i)}>
+                                  <Edit />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={() => onImageRemove(i)}>
+                                  <Clear />
+                                </IconButton>
+                              </Stack>
+                            </Grid>
+                          ))}
+                        </Grid>
+                      </div>
+                    )}
+                  </ImageUploading>
+                </Grid>
+              </Grid>
             </Grid>
           </DialogContent>
+
           <DialogActions sx={{ p: "1.25rem" }}>
             <Button onClick={onClose}>Cancel</Button>
             <Button type="submit" color="primary" variant="contained">
               Save
+              {loading ? <CircularProgress color="inherit" size="20px" sx={{ ml: 2 }} /> : ""}
             </Button>
           </DialogActions>
         </Box>

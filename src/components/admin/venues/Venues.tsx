@@ -1,21 +1,19 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { useRouter } from "next/router";
-
-import { Alert, Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography } from "@mui/material";
-import { Delete, Edit, Visibility } from "@mui/icons-material";
+import { Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import Link from "next/link";
+
 import { addVenue, deleteVenue, updateVenue } from "../../../redux/features/venue/venueActions";
+import { VenueType } from "../../../types/venue.types";
 import { AppDispatch, AppState } from "../../../redux/store";
 import VenueModalCreate from "./VenueModalCreate";
-import toast from "react-hot-toast";
-import { VenueType } from "../../../types/venue.types";
-import Link from "next/link";
 import { getCategories } from "../../../redux/features/categories/categoriesActions";
 import { getFacilities } from "../../../redux/features/facilities/faciltiesActions";
 
 const Venues: React.FC = () => {
-  const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const { venues, loading } = useSelector((state: AppState) => state.venue);
