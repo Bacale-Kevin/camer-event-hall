@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { Box, Breadcrumbs, Link as MuiLink, Typography, Button, IconButton, Alert, Tooltip } from "@mui/material";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { Delete, Edit } from "@mui/icons-material";
@@ -21,12 +21,26 @@ const FacilityComponent: React.FC = () => {
   const { facilities, loading } = useSelector((state: AppState) => state.facility);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     dispatch(getFacilities());
   }, [dispatch]);
+
+  /**
+   * React strict mode makes the textfield not to autofocus
+   * This useEffect ensures that when the form is open it is autofocused
+   */
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (createModalOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, [createModalOpen]);
 
   /***** ADD *****/
   const handleCreateNewRow = async (name: string) => {
@@ -153,6 +167,7 @@ const FacilityComponent: React.FC = () => {
               open={createModalOpen}
               onClose={() => setCreateModalOpen(false)}
               onSubmit={handleCreateNewRow}
+              inputRef={inputRef}
             />
           </>
         ) : (
@@ -193,6 +208,7 @@ const FacilityComponent: React.FC = () => {
               open={createModalOpen}
               onClose={() => setCreateModalOpen(false)}
               onSubmit={handleCreateNewRow}
+              inputRef={inputRef}
             />
           </>
         )}
