@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MRT_ColumnDef } from "material-react-table";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -26,6 +26,7 @@ import {
 import { VenueType } from "../../../types/venue.types";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../redux/store";
+import { Facility } from "@prisma/client";
 
 type Props = {
   columns: MRT_ColumnDef<VenueType>[];
@@ -62,9 +63,11 @@ const validationSchema = Yup.object().shape({
     .nullable()
     .optional(),
   categoryId: Yup.string().required("please select a category"),
+  facilities: Yup.array(),
 });
 
 const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, inputRef }) => {
+  const [checkBoxValue, setCheckBoxValue] = useState<Facility[]>([]);
   const { categories } = useSelector((state: AppState) => state.category);
   const { facilities } = useSelector((state: AppState) => state.facility);
   const {
@@ -72,6 +75,7 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     handleSubmit,
     reset,
     control,
+    getValues,
     formState: { errors },
   } = useForm<VenueType>({ resolver: yupResolver(validationSchema), mode: "all" });
 
@@ -252,9 +256,36 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                       <Grid container>
                         {facilities?.map((options, i) => (
                           <Grid item md={4} key={i}>
-                            <FormControlLabel
-                              control={<Checkbox {...register("facilities")} name="checkboxes" />}
-                              label={options.name}
+                            <Controller
+                              name="facilities"
+                              control={control}
+                              defaultValue={[]}
+                              render={({ field: { onChange, value } }) => {
+                                return (
+                                  <FormControlLabel
+                                    value={options}
+                                    label={options.name}
+                                    control={
+                                      <Checkbox
+                                        {...register("facilities")}
+                                        name={options.name}
+                                        onChange={(e) => {
+                                          const valueCopy = [...value!];
+                                          if (e.target.checked) {
+                                            valueCopy.push(options); // append to array
+                                          } else {
+                                            const idx = valueCopy.findIndex(
+                                              (formOption: any) => formOption[1] === options.name
+                                            );
+                                            valueCopy.splice(idx, 1); // remove from array
+                                          }
+                                          onChange(valueCopy);
+                                        }}
+                                      />
+                                    }
+                                  />
+                                );
+                              }}
                             />
                           </Grid>
                         ))}
