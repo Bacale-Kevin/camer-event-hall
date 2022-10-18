@@ -3,11 +3,13 @@ import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/t
 import authReducer from "./features/auth/authSlice";
 import categoryReducer from "./features/categories/categorySlice";
 import facilityReducer from "./features/facilities/facilitySlice";
+import venueReducer from "./features/venue/venueSlice";
 
 const combinedReducer = combineReducers({
   auth: authReducer,
   category: categoryReducer,
   facility: facilityReducer,
+  venue: venueReducer,
 });
 
 const rootReducer = (state: any, action: any) => {
