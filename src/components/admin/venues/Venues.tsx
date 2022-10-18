@@ -1,21 +1,91 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
 import { useRouter } from "next/router";
 
-import { Alert, Box, Button, IconButton, Tooltip } from "@mui/material";
+import { Alert, Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography } from "@mui/material";
 import { Delete, Edit, Visibility } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { addVenue, deleteVenue, updateVenue } from "../../../redux/features/venue/venueActions";
 import { AppDispatch, AppState } from "../../../redux/store";
 import VenueModalCreate from "./VenueModalCreate";
 import toast from "react-hot-toast";
-import { IVenue, VenueType } from "../../../types/venue.types";
+import { VenueType } from "../../../types/venue.types";
+import Link from "next/link";
+import { getCategories } from "../../../redux/features/categories/categoriesActions";
+import { getFacilities } from "../../../redux/features/facilities/faciltiesActions";
 
 const Venues: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [createModalOpen, setCreateModalOpen] = useState(false);
-  const { venues } = useSelector((state: AppState) => state.venue);
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+  const { venues, loading } = useSelector((state: AppState) => state.venue);
+  const [mounted, setMounted] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getFacilities());
+  }, [dispatch]);
+
+  /**
+   * React strict mode makes the textfield not to autofocus
+   * This useEffect ensures that when the form is open it is autofocused
+   */
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (createModalOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, [createModalOpen]);
+
+  /***** ADD *****/
+  const handleCreateNewRow = async (values: VenueType) => {
+    try {
+      await dispatch(addVenue(values)).unwrap();
+      toast.success("Task completed successfully");
+    } catch (error: any) {
+      toast.error(error);
+      console.log(error);
+    }
+  };
+
+  /***** EDIT *****/
+  const handleUpdateSave: MaterialReactTableProps<VenueType>["onEditingRowSave"] = async ({
+    exitEditingMode,
+    values,
+  }) => {
+    try {
+      await dispatch(updateVenue(values)).unwrap();
+      toast.success("Task completed successfully");
+      exitEditingMode();
+    } catch (error: any) {
+      toast.error(error);
+      console.log(error);
+    }
+  };
+
+  /***** DELETE *****/
+  const handleDeleteRow = useCallback(
+    async (row: MRT_Row<VenueType>) => {
+      if (!confirm(`Are you sure you want to delete ${row.getValue("name")}`)) {
+        return;
+      }
+
+      try {
+        const { id } = row.original;
+        await dispatch(deleteVenue(id!)).unwrap();
+        toast.success("Task completed successfully");
+      } catch (error: any) {
+        toast.error(error);
+        console.log(error);
+      }
+    },
+    [dispatch]
+  );
 
   const columns = useMemo<MRT_ColumnDef<VenueType>[]>(
     () => [
@@ -84,155 +154,115 @@ const Venues: React.FC = () => {
     []
   );
 
-  /***** ADD *****/
-  const handleCreateNewRow = async (values: VenueType) => {
-    try {
-      await dispatch(addVenue(values)).unwrap();
-      toast.success("Task completed successfully");
-    } catch (error: any) {
-      toast.error(error);
-      console.log(error);
-    }
-  };
+  if (mounted) {
+    return (
+      <>
+        <Box sx={{ py: 2, pl: 2 }}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link href="/" passHref>
+              <MuiLink underline="hover" color="inherit">
+                Home
+              </MuiLink>
+            </Link>
+            <Link href="/admin" passHref>
+              <MuiLink underline="hover" color="inherit">
+                Admin
+              </MuiLink>
+            </Link>
+            <Typography color="text.primary">Venues</Typography>
+          </Breadcrumbs>
+        </Box>
 
-  /***** EDIT *****/
-  const handleUpdateSave: MaterialReactTableProps<VenueType>["onEditingRowSave"] = async ({
-    exitEditingMode,
-    values,
-  }) => {
-    try {
-      await dispatch(updateVenue(values)).unwrap();
-      toast.success("Task completed successfully");
-      exitEditingMode();
-    } catch (error: any) {
-      toast.error(error);
-      console.log(error);
-    }
-  };
+        {/* show skeleton loader  */}
+        {loading ? (
+          <>
+            <MaterialReactTable
+              columns={columns}
+              data={[]}
+              state={{ isLoading: loading }}
+              enableEditing
+              onEditingRowSave={handleUpdateSave}
+              enableRowActions
+              renderRowActions={({ row, table }) => (
+                <Box sx={{ display: "flex", gap: "1rem" }}>
+                  <Tooltip arrow placement="left" title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        return table.setEditingRow(row);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip arrow placement="right" title="Delete">
+                    <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              renderTopToolbarCustomActions={() => (
+                <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
+                  Create New Facility
+                </Button>
+              )}
+            />
 
-  /***** DELETE *****/
-  const handleDeleteRow = useCallback(
-    async (row: MRT_Row<VenueType>) => {
-      if (!confirm(`Are you sure you want to delete ${row.getValue("name")}`)) {
-        return;
-      }
+            <VenueModalCreate
+              columns={columns}
+              open={createModalOpen}
+              onClose={() => setCreateModalOpen(false)}
+              onSubmit={handleCreateNewRow}
+              inputRef={inputRef}
+            />
+          </>
+        ) : (
+          <>
+            <MaterialReactTable
+              columns={columns}
+              data={venues}
+              enableEditing
+              onEditingRowSave={handleUpdateSave}
+              enableRowActions
+              renderRowActions={({ row, table }) => (
+                <Box sx={{ display: "flex", gap: "1rem" }}>
+                  <Tooltip arrow placement="left" title="Edit">
+                    <IconButton
+                      onClick={() => {
+                        return table.setEditingRow(row);
+                      }}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip arrow placement="right" title="Delete">
+                    <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+              renderTopToolbarCustomActions={() => (
+                <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
+                  Create New Facility
+                </Button>
+              )}
+            />
 
-      try {
-        const { id } = row.original;
-        await dispatch(deleteVenue(id!)).unwrap();
-        toast.success("Task completed successfully");
-      } catch (error: any) {
-        toast.error(error);
-        console.log(error);
-      }
-    },
-    [dispatch]
-  );
-
-  return (
-    <>
-      {venues?.length === 0 ? (
-        <>
-          <MaterialReactTable
-            columns={columns}
-            data={venues}
-            enableEditing
-            onEditingRowSave={handleUpdateSave}
-            enableRowActions
-            renderRowActions={({ row, table }) => (
-              <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Tooltip arrow placement="left" title="Edit">
-                  <IconButton
-                    onClick={() => {
-                      return table.setEditingRow(row);
-                    }}
-                    // onClick={() => handleEdit(row, table)}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip arrow placement="right" title="Delete">
-                  <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip arrow placement="right" title="Delete">
-                  <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            renderTopToolbarCustomActions={() => (
-              <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                Create New Venue
-              </Button>
-            )}
-          />
-          <Alert severity="info">No data! click on the button at the top left to create one</Alert>
-
-          <VenueModalCreate
-            columns={columns}
-            open={createModalOpen}
-            onClose={() => setCreateModalOpen(false)}
-            onSubmit={handleCreateNewRow}
-          />
-        </>
-      ) : (
-        <>
-          <MaterialReactTable
-            columns={columns}
-            data={venues!}
-            enableEditing
-            onEditingRowSave={handleUpdateSave}
-            enableRowActions
-            renderRowActions={({ row }) => (
-              <Box sx={{ display: "flex", gap: "1rem" }}>
-                <Tooltip arrow placement="left" title="Edit">
-                  <IconButton
-                    // onClick={() => {
-                    //   return table.setEditingRow(row)
-                    // }}
-                    onClick={() => router.push(`${router.pathname}/edit/${row.original.id}`)}
-                  >
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip arrow placement="right" title="Delete">
-                  <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                    <Delete />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip arrow placement="right" title="View">
-                  <IconButton onClick={() => router.push(`${router.pathname}/${row.original?.id}`)}>
-                    <Visibility />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            renderTopToolbarCustomActions={() => (
-              <Button color="primary" onClick={() => setCreateModalOpen(true)} variant="contained">
-                Add Venue
-              </Button>
-            )}
-          />
-
-          {/* <VeueModal
-            columns={columns}
-            open={createModalOpen}
-            onClose={() => setCreateModalOpen(false)}
-            onSubmit={handleCreateNewRow}
-          /> */}
-          <VenueModalCreate
-            columns={columns}
-            open={createModalOpen}
-            onClose={() => setCreateModalOpen(false)}
-            onSubmit={handleCreateNewRow}
-          />
-        </>
-      )}
-    </>
-  );
+            <VenueModalCreate
+              columns={columns}
+              open={createModalOpen}
+              onClose={() => setCreateModalOpen(false)}
+              onSubmit={handleCreateNewRow}
+              inputRef={inputRef}
+            />
+          </>
+        )}
+      </>
+    );
+  } else {
+    return <></>;
+  }
 };
 
 export default Venues;
