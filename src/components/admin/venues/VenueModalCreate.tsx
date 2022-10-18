@@ -27,12 +27,13 @@ import {
   Switch,
   TextField,
 } from "@mui/material";
-import { VenueType } from "../../../types/venue.types";
-import { useSelector } from "react-redux";
-import { AppState } from "../../../redux/store";
 import { Clear, Edit, FileUpload } from "@mui/icons-material";
 import Image from "next/image";
 import axios from "axios";
+import { useSelector } from "react-redux";
+
+import { AppState } from "../../../redux/store";
+import { VenueType } from "../../../types/venue.types";
 
 type Props = {
   columns: MRT_ColumnDef<VenueType>[];
@@ -85,7 +86,13 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     reset,
     control,
     formState: { errors },
-  } = useForm<VenueType>({ resolver: yupResolver(validationSchema), mode: "all" });
+  } = useForm<VenueType>({
+    resolver: yupResolver(validationSchema),
+    mode: "all",
+    defaultValues: {
+      imagesUrl: images,
+    },
+  });
 
   const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
     try {
@@ -100,20 +107,17 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
           form.append("cloud_name", "bacale");
 
           const payload = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL!, form);
-          console.log("payload --> ", payload.data.url);
           data.imagesUrl?.push(payload.data.url);
-          console.log("url --> ", data?.imagesUrl);
           setLoading(false);
         }
-        console.log(data);
+        setLoading(false);
+        reset();
+        onClose();
       }
     } catch (error: any) {
       setLoading(false);
       console.log(error.message);
     }
-    // console.log(data);
-    // reset();
-    // onClose();
   };
 
   /***** HANDLE MEDIA CHANGE ******/
@@ -273,6 +277,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                   <FormHelperText>{errors.categoryId?.message}</FormHelperText>
                 </FormControl>
               </Grid>
+
+              {/* description */}
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -369,13 +375,13 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                           variant="contained"
                           color="inherit"
                           hidden
+                          disabled={loading}
                           sx={{ textTransform: "capitalize", py: 3, px: 3, border: "1px dashed" }}
                           style={isDragging ? { color: "red" } : undefined}
                           onClick={onImageUpload}
                           {...dragProps}
                         >
                           Click or Drop Images here
-                          {/* <input type="file" multiple hidden {...register("imagesUrl")} /> */}
                         </Button>
                         &nbsp;
                         <Button
