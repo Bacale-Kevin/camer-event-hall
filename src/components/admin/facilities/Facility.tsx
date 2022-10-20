@@ -5,6 +5,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import dayjs from 'dayjs'
 
 import { AppDispatch, AppState } from "../../../redux/store";
 import { Facility } from "@prisma/client";
@@ -98,11 +99,29 @@ const FacilityComponent: React.FC = () => {
           required: true,
           type: "text",
         },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {cellProps?.row?.original?.name}
+              </Box>
+            </>
+          );
+        },
       },
       {
         accessorKey: "createdAt", //normal accessorKey
         header: "Created At",
         enableEditing: false,
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {dayjs(cellProps?.row?.original?.createdAt).format('DD/MM/YYYY')}
+              </Box>
+            </>
+          );
+        },
       },
     ],
     []

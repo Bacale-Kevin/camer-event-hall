@@ -3,7 +3,7 @@ import { Booking, Facility, Notification, Review, Venue } from "@prisma/client";
 export type VenueType = {
   id?: string;
   name: string;
-  price: number | string;
+  price: number;
   description: string;
   location: string;
   city: string;
@@ -13,6 +13,7 @@ export type VenueType = {
   categoryId: string;
   userId: string;
   imagesUrl?: string[];
+  createdAt?: Date,
   isVerified: boolean;
   facilities?: Facility[];
 };

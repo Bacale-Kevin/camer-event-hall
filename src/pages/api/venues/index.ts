@@ -76,7 +76,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
 
       const createdVenue = await prisma.venue.create({
         data: {
-          name: venueName,
+          name: venueName.toLowerCase(),
           price: Number(price),
           description,
           location,
@@ -114,8 +114,6 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
           },
         },
       });
-
-      console.log(createdVenue);
 
       return res.status(200).json(createdVenue);
     } catch (error: any) {

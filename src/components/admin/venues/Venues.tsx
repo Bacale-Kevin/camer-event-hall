@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import dayjs from "dayjs";
 
 import { addVenue, deleteVenue, getVenues, updateVenue } from "../../../redux/features/venue/venueActions";
 import { VenueType } from "../../../types/venue.types";
@@ -14,6 +15,7 @@ import { getCategories } from "../../../redux/features/categories/categoriesActi
 import { getFacilities } from "../../../redux/features/facilities/faciltiesActions";
 
 const Venues: React.FC = () => {
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const { venues, loading } = useSelector((state: AppState) => state.venue);
@@ -25,7 +27,7 @@ const Venues: React.FC = () => {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getFacilities());
-    dispatch(getVenues())
+    dispatch(getVenues());
   }, [dispatch]);
 
   /**
@@ -96,14 +98,39 @@ const Venues: React.FC = () => {
           required: true,
           type: "text",
         },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {cellProps?.row?.original?.name}
+              </Box>
+            </>
+          );
+        },
       },
       {
         accessorKey: "price",
-        header: "PricePerNight",
+        header: "Price",
         enableEditing: true,
         muiTableBodyCellEditTextFieldProps: {
           required: true,
           type: "number",
+        },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box
+                component="span"
+                // sx={{ border: 1, py: 0.5, px: 1.5, borderRadius: 10, borderColor: theme.palette.grey[300] }}
+              >
+                {cellProps?.row?.original?.price
+                  // .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}{" "}
+                XAF
+              </Box>
+            </>
+          );
         },
       },
       {
@@ -114,6 +141,15 @@ const Venues: React.FC = () => {
           required: true,
           type: "text",
         },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {cellProps?.row?.original?.city}
+              </Box>
+            </>
+          );
+        },
       },
       {
         accessorKey: "location",
@@ -122,6 +158,15 @@ const Venues: React.FC = () => {
         muiTableBodyCellEditTextFieldProps: {
           required: true,
           type: "text",
+        },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {cellProps?.row?.original?.location}
+              </Box>
+            </>
+          );
         },
       },
       {
@@ -147,6 +192,32 @@ const Venues: React.FC = () => {
         muiTableBodyCellEditTextFieldProps: {
           required: true,
           type: "number",
+        },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{}}>
+                {cellProps?.row?.original?.price
+                  // .toFixed(2)
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              </Box>
+            </>
+          );
+        },
+      },
+      {
+        accessorKey: "createdAt", //normal accessorKey
+        header: "Created At",
+        enableEditing: false,
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {dayjs(cellProps?.row?.original?.createdAt).format("DD/MM/YYYY")}
+              </Box>
+            </>
+          );
         },
       },
     ],

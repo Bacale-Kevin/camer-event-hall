@@ -5,15 +5,16 @@ import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import toast from "react-hot-toast";
-
-import { AppDispatch, AppState } from "../../../redux/store";
 import { Category } from "@prisma/client";
+import dayjs from "dayjs";
+
 import {
   createCategory,
   deleteCategory,
   getCategories,
   updateCategory,
 } from "../../../redux/features/categories/categoriesActions";
+import { AppDispatch, AppState } from "../../../redux/store";
 import CreateCategoryModal from "./CreateCategoryModal";
 
 const CategoryComponent: React.FC = () => {
@@ -98,11 +99,29 @@ const CategoryComponent: React.FC = () => {
           required: true,
           type: "text",
         },
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {cellProps?.row?.original?.name}
+              </Box>
+            </>
+          );
+        },
       },
       {
         accessorKey: "createdAt", //normal accessorKey
         header: "Created At",
         enableEditing: false,
+        Cell: (cellProps) => {
+          return (
+            <>
+              <Box component="span" sx={{ textTransform: "capitalize" }}>
+                {dayjs(cellProps?.row?.original?.createdAt).format("DD/MM/YYYY")}
+              </Box>
+            </>
+          );
+        },
       },
     ],
     []
