@@ -80,6 +80,7 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
   const maxNumber = 10;
   const { categories } = useSelector((state: AppState) => state.category);
   const { facilities } = useSelector((state: AppState) => state.facility);
+
   const {
     register,
     handleSubmit,
@@ -96,8 +97,8 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
 
   const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
     try {
-      setLoading(true);
       if (images.length) {
+        setLoading(true);
         const files = images.map((media: any) => media?.file);
 
         for (const file of files) {
@@ -108,12 +109,12 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
 
           const payload = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL!, form);
           data.imagesUrl?.push(payload.data.url);
-          setLoading(false);
         }
         setLoading(false);
-        reset();
-        onClose();
       }
+      onSubmit(data);
+      reset();
+      onClose();
     } catch (error: any) {
       setLoading(false);
       console.log(error.message);
@@ -323,7 +324,7 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                               render={({ field: { onChange, value } }) => {
                                 return (
                                   <FormControlLabel
-                                    value={options}
+                                    value={options.name}
                                     label={options.name}
                                     control={
                                       <Checkbox
@@ -417,7 +418,7 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
 
           <DialogActions sx={{ p: "1.25rem" }}>
             <Button onClick={onClose}>Cancel</Button>
-            <Button type="submit" color="primary" variant="contained">
+            <Button type="submit" disabled={loading} color="primary" variant="contained">
               Save
               {loading ? <CircularProgress color="inherit" size="20px" sx={{ ml: 2 }} /> : ""}
             </Button>
