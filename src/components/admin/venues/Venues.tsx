@@ -1,23 +1,24 @@
 import React, { useCallback, useMemo, useState, useEffect, useRef } from "react";
 import MaterialReactTable, { MaterialReactTableProps, MRT_ColumnDef, MRT_Row } from "material-react-table";
-import { Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Breadcrumbs, Button, Link as MuiLink, IconButton, Tooltip, Typography } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import dayjs from "dayjs";
 
-import { addVenue, deleteVenue, getVenues, updateVenue } from "../../../redux/features/venue/venueActions";
+import { addVenue, deleteVenue, getVenue, getVenues, updateVenue } from "../../../redux/features/venue/venueActions";
 import { VenueType } from "../../../types/venue.types";
 import { AppDispatch, AppState } from "../../../redux/store";
 import VenueModalCreate from "./VenueModalCreate";
 import { getCategories } from "../../../redux/features/categories/categoriesActions";
 import { getFacilities } from "../../../redux/features/facilities/faciltiesActions";
+import VenueModalUpdate from "./VenueModalUpdate";
 
 const Venues: React.FC = () => {
-  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+  const [updateModalOpen, setUpdateModalOpen] = useState<boolean>(false);
   const { venues, loading } = useSelector((state: AppState) => state.venue);
   const [mounted, setMounted] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +43,14 @@ const Venues: React.FC = () => {
     }, 0);
     return () => clearTimeout(timeout);
   }, [createModalOpen]);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (updateModalOpen && inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 0);
+    return () => clearTimeout(timeout);
+  }, [updateModalOpen]);
 
   /***** ADD *****/
   const handleCreateNewRow = async (values: VenueType) => {
@@ -257,8 +266,13 @@ const Venues: React.FC = () => {
                 <Box sx={{ display: "flex", gap: "1rem" }}>
                   <Tooltip arrow placement="left" title="Edit">
                     <IconButton
+                      // onClick={() => {
+                      //   return table.setEditingRow(row);
+                      // }}
                       onClick={() => {
-                        return table.setEditingRow(row);
+                        const id = row.original?.id;
+                        dispatch(getVenue(id!));
+                        return setUpdateModalOpen(true);
                       }}
                     >
                       <Edit />
@@ -298,8 +312,13 @@ const Venues: React.FC = () => {
                 <Box sx={{ display: "flex", gap: "1rem" }}>
                   <Tooltip arrow placement="left" title="Edit">
                     <IconButton
+                      // onClick={() => {
+                      //   return table.setEditingRow(row);
+                      // }}
                       onClick={() => {
-                        return table.setEditingRow(row);
+                        const id = row.original?.id;
+                        dispatch(getVenue(id!));
+                        return setUpdateModalOpen(true);
                       }}
                     >
                       <Edit />
@@ -323,6 +342,13 @@ const Venues: React.FC = () => {
               columns={columns}
               open={createModalOpen}
               onClose={() => setCreateModalOpen(false)}
+              onSubmit={handleCreateNewRow}
+              inputRef={inputRef}
+            />
+            <VenueModalUpdate
+              columns={columns}
+              open={updateModalOpen}
+              onClose={() => setUpdateModalOpen(false)}
               onSubmit={handleCreateNewRow}
               inputRef={inputRef}
             />
