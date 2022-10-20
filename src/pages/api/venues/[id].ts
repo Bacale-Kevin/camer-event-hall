@@ -38,7 +38,9 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
           },
           facilities: {
             select: {
+              id: true,
               name: true,
+              createdAt: true,
             },
           },
         },

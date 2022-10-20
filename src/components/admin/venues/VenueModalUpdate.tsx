@@ -75,13 +75,13 @@ const validationSchema = Yup.object().shape({
 });
 
 const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, inputRef }) => {
-    const [loading, setLoading] = useState(false);
-    const maxNumber = 10;
-    const { categories } = useSelector((state: AppState) => state.category);
-    const { facilities } = useSelector((state: AppState) => state.facility);
-    const { venue } = useSelector((state: AppState) => state.venue);
-    const [images, setImages] = useState([]);
-  console.log(venue);
+  const [loading, setLoading] = useState(false);
+  const maxNumber = 10;
+  const { categories } = useSelector((state: AppState) => state.category);
+  const { facilities } = useSelector((state: AppState) => state.facility);
+  const { venue } = useSelector((state: AppState) => state.venue);
+  const [images, setImages] = useState([]);
+  //   console.log(facilities);
   const {
     register,
     handleSubmit,
@@ -333,8 +333,9 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                             <Controller
                               name="facilities"
                               control={control}
-                              defaultValue={[]}
+                              defaultValue={venue?.facilities}
                               render={({ field: { onChange, value } }) => {
+                                const valueName = value?.map((el) => el.name);
                                 return (
                                   <FormControlLabel
                                     value={options.name}
@@ -343,15 +344,17 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                                       <Checkbox
                                         {...register("facilities")}
                                         name={options.name}
+                                        checked={valueName?.includes(options.name)}
                                         onChange={(e) => {
                                           const valueCopy = [...value!];
                                           if (e.target.checked) {
                                             valueCopy.push(options); // append to array
                                           } else {
-                                            const idx = valueCopy.findIndex(
-                                              (formOption: any) => formOption[1] === options.name
-                                            );
-                                            valueCopy.splice(idx, 1); // remove from array
+                                            const targetName = valueCopy.find((el) => el.name === e.target.value);
+                                            const idx = valueCopy.indexOf(targetName!);
+                                            if (idx > -1) {
+                                              valueCopy.splice(idx, 1); // remove from array
+                                            }
                                           }
                                           onChange(valueCopy);
                                         }}
