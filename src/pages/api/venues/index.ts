@@ -12,39 +12,39 @@ interface ExtendedNextApiRequest extends NextApiRequest {
 }
 
 export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
-  //   if (req.method === "GET") {
-  //     try {
-  //       const venues = await prisma.venue.findMany({
-  //         orderBy: { createdAt: "desc" },
-  //         include: {
-  //           category: {
-  //             select: {
-  //               name: true,
-  //             },
-  //           },
-  //           user: {
-  //             select: {
-  //               name: true,
-  //               email: true,
-  //               role: true,
-  //               emailVerified: true,
-  //               phone: true,
-  //             },
-  //           },
-  //           amenities: {
-  //             select: {
-  //               name: true,
-  //             },
-  //           },
-  //         },
-  //       });
+  if (req.method === "GET") {
+    try {
+      const venues = await prisma.venue.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+              email: true,
+              role: true,
+              emailVerified: true,
+              phone: true,
+            },
+          },
+          facilities: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
 
-  //       return res.status(200).json(venues);
-  //     } catch (error: any) {
-  //       console.log(error.message);
-  //       return res.status(500).send("Server error");
-  //     }
-  //   }
+      return res.status(200).json(venues);
+    } catch (error: any) {
+      console.log(error.message);
+      return res.status(500).send("Server error");
+    }
+  }
 
   if (req.method === "POST") {
     try {

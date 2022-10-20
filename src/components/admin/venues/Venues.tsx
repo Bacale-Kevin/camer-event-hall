@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Link from "next/link";
 
-import { addVenue, deleteVenue, updateVenue } from "../../../redux/features/venue/venueActions";
+import { addVenue, deleteVenue, getVenues, updateVenue } from "../../../redux/features/venue/venueActions";
 import { VenueType } from "../../../types/venue.types";
 import { AppDispatch, AppState } from "../../../redux/store";
 import VenueModalCreate from "./VenueModalCreate";
@@ -25,6 +25,7 @@ const Venues: React.FC = () => {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getFacilities());
+    dispatch(getVenues())
   }, [dispatch]);
 
   /**
