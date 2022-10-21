@@ -54,7 +54,7 @@ export const deleteVenue = createAsyncThunk(`api/venues/id(delete)`, async (id: 
 export const updateVenue = createAsyncThunk(`api/venues/id(update)`, async (venue: VenueType, { rejectWithValue }) => {
   try {
     const { id } = venue;
-    const { data } = await API.put(`/api/venue-types/${id}`, { venue });
+    const { data } = await API.put(`/api/venues/${id}`, { venue });
 
     return data;
   } catch (error: any) {

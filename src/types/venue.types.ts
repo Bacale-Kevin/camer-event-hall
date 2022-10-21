@@ -16,7 +16,7 @@ export type VenueType = {
   createdAt?: Date;
   category: Category;
   isVerified: boolean;
-  facilities?: Facility[];
+  facilities?: Facility[] | any;
 };
 
 export interface IVenue {

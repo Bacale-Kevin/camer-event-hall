@@ -63,6 +63,16 @@ const Venues: React.FC = () => {
     }
   };
 
+  const handleUpdateRow = async (values: VenueType) => {
+    try {
+      await dispatch(updateVenue(values)).unwrap();
+      toast.success("Task completed successfully");
+    } catch (error: any) {
+      toast.error(error);
+      console.log(error);
+    }
+  };
+
   /***** EDIT *****/
   const handleUpdateSave: MaterialReactTableProps<VenueType>["onEditingRowSave"] = async ({
     exitEditingMode,
@@ -349,7 +359,7 @@ const Venues: React.FC = () => {
               columns={columns}
               open={updateModalOpen}
               onClose={() => setUpdateModalOpen(false)}
-              onSubmit={handleCreateNewRow}
+              onSubmit={handleUpdateRow}
               inputRef={inputRef}
             />
           </>

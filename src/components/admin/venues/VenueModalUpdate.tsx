@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MRT_ColumnDef } from "material-react-table";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -34,6 +34,7 @@ import { useSelector } from "react-redux";
 
 import { AppState } from "../../../redux/store";
 import { VenueType } from "../../../types/venue.types";
+import { convertImagesToBase64DataURL, dataURLtoFile } from "../../../../utils/convertImagesToBase64URL";
 
 type Props = {
   columns: MRT_ColumnDef<VenueType>[];
@@ -80,8 +81,8 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
   const { categories } = useSelector((state: AppState) => state.category);
   const { facilities } = useSelector((state: AppState) => state.facility);
   const { venue } = useSelector((state: AppState) => state.venue);
-  const [images, setImages] = useState([]);
-  //   console.log(facilities);
+  const [images, setImages] = useState<any>([]);
+
   const {
     register,
     handleSubmit,
@@ -92,6 +93,7 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     resolver: yupResolver(validationSchema),
     mode: "all",
     defaultValues: {
+      id: venue?.id,
       name: venue?.name,
       city: venue?.city,
       location: venue?.location,
@@ -103,6 +105,18 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
       imagesUrl: venue?.imagesUrl,
     },
   });
+
+  useEffect(() => {
+    venue?.imagesUrl?.map((el) => {
+      convertImagesToBase64DataURL(el)
+        .then((dataUrl) => {
+          var fileData = dataURLtoFile(dataUrl, "imageName.jpg");
+
+          setImages((prev: any) => [...prev, { dataURL: dataUrl, file: fileData }]);
+        })
+        .catch((err) => console.log(err));
+    });
+  }, [open]);
 
   const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
     try {
@@ -116,12 +130,34 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
           form.append("upload_preset", "wee-connect");
           form.append("cloud_name", "bacale");
 
+          /**
+           * TODO: move the image upload data fetching to the server
+           */
           const payload = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL!, form);
+
           data.imagesUrl?.push(payload.data.url);
         }
         setLoading(false);
       }
-      onSubmit(data);
+      const formatedFacilitiesName = data.facilities?.map((el: any) => {
+        if (el.name === undefined) {
+          return {
+            name: el,
+          };
+        } else {
+          return {
+            name: el.name,
+          };
+        }
+      });
+
+      const dataToBeSubmitted = {
+        ...data,
+        facilities: formatedFacilitiesName,
+      };
+
+      console.log(dataToBeSubmitted);
+      onSubmit(dataToBeSubmitted);
       reset();
       onClose();
     } catch (error: any) {
@@ -335,7 +371,7 @@ const VenueModalUpdate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
                               control={control}
                               defaultValue={venue?.facilities}
                               render={({ field: { onChange, value } }) => {
-                                const valueName = value?.map((el) => el.name);
+                                const valueName = value?.map((el: any) => el.name);
                                 return (
                                   <FormControlLabel
                                     value={options.name}

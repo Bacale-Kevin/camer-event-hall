@@ -1,4 +1,3 @@
-import { Facility } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import { VenueType } from "./../../../types/venue.types";
@@ -63,11 +62,11 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
         facilities,
       } = req.body.venue;
 
-      const collectNameFromFacilities = facilities?.map((fclty) => {
-        return {
-          name: fclty?.name,
-        };
-      });
+      // const collectNameFromFacilities = facilities?.map((fclty) => {
+      //   return {
+      //     name: fclty?.name,
+      //   };
+      // });
 
       const { token } = req.cookies;
       const payload = await verifyToken(token!, res);
@@ -89,7 +88,7 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
           categoryId,
           userId: user?.id!,
           facilities: {
-            connect: collectNameFromFacilities,
+            connect: facilities,
           },
         },
         include: {
