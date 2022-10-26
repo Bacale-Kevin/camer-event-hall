@@ -3,7 +3,7 @@ import { MRT_ColumnDef } from "material-react-table";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import * as Yup from "yup";
-import ImageUploading, { ImageListType } from "react-images-uploading";
+import ImageUploading from "react-images-uploading";
 import {
   Box,
   Button,
@@ -29,7 +29,6 @@ import {
 } from "@mui/material";
 import { Clear, Edit, FileUpload } from "@mui/icons-material";
 import Image from "next/image";
-import axios from "axios";
 import { useSelector } from "react-redux";
 
 import { AppState } from "../../../redux/store";
@@ -75,7 +74,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, inputRef }) => {
-  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const maxNumber = 10;
   const { categories } = useSelector((state: AppState) => state.category);
@@ -91,39 +89,15 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     resolver: yupResolver(validationSchema),
     mode: "all",
     defaultValues: {
-      imagesUrl: images,
+      imagesUrl: [],
     },
   });
 
-  const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
-    try {
-      if (images.length) {
-        setLoading(true);
-        const files = images.map((media: any) => media?.file);
-
-        for (const file of files) {
-          const form = new FormData();
-          form.append("file", file);
-          form.append("upload_preset", "wee-connect");
-          form.append("cloud_name", "bacale");
-
-          const payload = await axios.post(process.env.NEXT_PUBLIC_CLOUDINARY_URL!, form);
-          data.imagesUrl?.push(payload.data.url);
-        }
-        setLoading(false);
-      }
-      onSubmit(data);
-      reset();
-      onClose();
-    } catch (error: any) {
-      setLoading(false);
-      console.log(error.message);
-    }
-  };
-
-  /***** HANDLE MEDIA CHANGE ******/
-  const handleImageChange = (imagesList: ImageListType) => {
-    setImages(imagesList as never[]);
+  const onSubmitHandler: SubmitHandler<VenueType> = (data) => {
+    console.log(data);
+    onSubmit(data);
+    // reset();
+    // onClose();
   };
 
   return (
@@ -359,58 +333,68 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
               {/* Media */}
               <Grid container sx={{ mx: 2, py: 3 }}>
                 <Grid item xs={12}>
-                  <ImageUploading multiple value={images} onChange={handleImageChange} maxNumber={maxNumber}>
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
-                      // write your building UI
-                      <div className="upload__image-wrapper">
-                        <Button
-                          endIcon={<FileUpload />}
-                          variant="contained"
-                          color="inherit"
-                          hidden
-                          disabled={loading}
-                          sx={{ textTransform: "capitalize", py: 3, px: 3, border: "1px dashed" }}
-                          style={isDragging ? { color: "red" } : undefined}
-                          onClick={onImageUpload}
-                          {...dragProps}
-                        >
-                          Click or Drop Images here
-                        </Button>
-                        &nbsp;
-                        <Button
-                          endIcon={<Clear />}
-                          color="secondary"
-                          sx={{ textTransform: "capitalize" }}
-                          onClick={onImageRemoveAll}
-                        >
-                          Remove all images
-                        </Button>
-                        <Grid container className="image-item">
-                          {imageList.map((image, i) => (
-                            <Grid item sm={2} key={i} sx={{ mt: 2 }}>
-                              <Image src={image.dataURL!} alt="" width={80} height={80} />
-                              <Stack direction="row">
-                                <IconButton aria-label="delete" onClick={() => onImageUpdate(i)}>
-                                  <Edit />
-                                </IconButton>
-                                <IconButton aria-label="delete" onClick={() => onImageRemove(i)}>
-                                  <Clear />
-                                </IconButton>
-                              </Stack>
-                            </Grid>
-                          ))}
-                        </Grid>
-                      </div>
-                    )}
-                  </ImageUploading>
+                  <Controller
+                    name="imagesUrl"
+                    control={control}
+                    defaultValue={[]}
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <ImageUploading multiple value={value! as any[]} onChange={onChange} maxNumber={maxNumber}>
+                          {({
+                            imageList,
+                            onImageUpload,
+                            onImageRemoveAll,
+                            onImageUpdate,
+                            onImageRemove,
+                            isDragging,
+                            dragProps,
+                          }) => (
+                            // write your building UI
+                            <div className="upload__image-wrapper">
+                              <Button
+                                endIcon={<FileUpload />}
+                                variant="contained"
+                                color="inherit"
+                                hidden
+                                disabled={loading}
+                                sx={{ textTransform: "capitalize", py: 3, px: 3, border: "1px dashed" }}
+                                style={isDragging ? { color: "red" } : undefined}
+                                onClick={onImageUpload}
+                                {...dragProps}
+                                onChange={onChange}
+                              >
+                                Click or Drop Images here
+                              </Button>
+                              &nbsp;
+                              <Button
+                                endIcon={<Clear />}
+                                color="secondary"
+                                sx={{ textTransform: "capitalize" }}
+                                onClick={onImageRemoveAll}
+                              >
+                                Remove all images
+                              </Button>
+                              <Grid container className="image-item">
+                                {imageList.map((image, i) => (
+                                  <Grid item sm={2} key={i} sx={{ mt: 2 }}>
+                                    <Image src={image.dataURL!} alt="" width={80} height={80} />
+                                    <Stack direction="row">
+                                      <IconButton aria-label="delete" onClick={() => onImageUpdate(i)}>
+                                        <Edit />
+                                      </IconButton>
+                                      <IconButton aria-label="delete" onClick={() => onImageRemove(i)}>
+                                        <Clear />
+                                      </IconButton>
+                                    </Stack>
+                                  </Grid>
+                                ))}
+                              </Grid>
+                            </div>
+                          )}
+                        </ImageUploading>
+                      );
+                    }}
+                  />
                 </Grid>
               </Grid>
             </Grid>

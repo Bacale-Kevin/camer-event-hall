@@ -68,53 +68,56 @@ export default async function handler(req: ExtendedNextApiRequest, res: NextApiR
       //   };
       // });
 
-      const { token } = req.cookies;
-      const payload = await verifyToken(token!, res);
+      console.log("request body --> ", req.body.venue);
 
-      const user = await prisma.user.findFirst({ where: { id: payload?.userId } });
+      // const { token } = req.cookies;
+      // const payload = await verifyToken(token!, res);
 
-      const createdVenue = await prisma.venue.create({
-        data: {
-          name: venueName.toLowerCase(),
-          price: Number(price),
-          description,
-          location,
-          city,
-          guestCapacity: Number(guestCapacity),
-          longitude: Number(longitude),
-          latitude: Number(latitude),
-          isVerified,
-          imagesUrl,
-          categoryId,
-          userId: user?.id!,
-          facilities: {
-            connect: facilities,
-          },
-        },
-        include: {
-          category: {
-            select: {
-              name: true,
-            },
-          },
-          user: {
-            select: {
-              name: true,
-              email: true,
-              role: true,
-              emailVerified: true,
-              phone: true,
-            },
-          },
-          facilities: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
+      // const user = await prisma.user.findFirst({ where: { id: payload?.userId } });
 
-      return res.status(200).json(createdVenue);
+      // const createdVenue = await prisma.venue.create({
+      //   data: {
+      //     name: venueName.toLowerCase(),
+      //     price: Number(price),
+      //     description,
+      //     location,
+      //     city,
+      //     guestCapacity: Number(guestCapacity),
+      //     longitude: Number(longitude),
+      //     latitude: Number(latitude),
+      //     isVerified,
+      //     imagesUrl,
+      //     categoryId,
+      //     userId: user?.id!,
+      //     facilities: {
+      //       connect: facilities,
+      //     },
+      //   },
+      //   include: {
+      //     category: {
+      //       select: {
+      //         name: true,
+      //       },
+      //     },
+      //     user: {
+      //       select: {
+      //         name: true,
+      //         email: true,
+      //         role: true,
+      //         emailVerified: true,
+      //         phone: true,
+      //       },
+      //     },
+      //     facilities: {
+      //       select: {
+      //         name: true,
+      //       },
+      //     },
+      //   },
+      // });
+
+      return res.status(200).send("POST routes hitted");
+      // return res.status(200).json(createdVenue);
     } catch (error: any) {
       console.log(error.message);
       return res.status(500).send("Server error");
