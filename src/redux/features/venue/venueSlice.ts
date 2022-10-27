@@ -1,29 +1,11 @@
-import { Venue } from '@prisma/client';
-import { Review } from '@prisma/client';
-import { Booking } from '@prisma/client';
-import { Facility } from '@prisma/client';
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IVenue } from "../../../types/venue.types";
 
 import { addVenue, deleteVenue, getVenues, updateVenue, getVenue } from "./venueActions";
 
-type VenueStateInput = {
-  loading: boolean;
-  isError: boolean;
-  isSuccess: boolean;
-  errorMessage: string;
-  venues?: Venue[];
-  venue: Venue | null;
-  reviews?: Review[];
-  notification?: Notification[];
-  bookings?: Booking[];
-  facilities?: Facility[];
-};
-
-const initialState: VenueStateInput = {
+const initialState: IVenue = {
   loading: false,
   venues: [],
-
   venue: null,
   isError: false,
   isSuccess: false,

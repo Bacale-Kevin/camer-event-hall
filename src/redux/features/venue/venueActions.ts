@@ -1,4 +1,4 @@
-import { IVenue } from "./../../../types/venue.types";
+import { VenueType } from "./../../../types/venue.types";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { API } from "./../../../../utils/baseUrl";
@@ -6,7 +6,7 @@ import { API } from "./../../../../utils/baseUrl";
 /***** ADD VENUE ******/
 export const addVenue = createAsyncThunk(
   `api/venues/create`,
-  async (venue: IVenue, { rejectWithValue, fulfillWithValue }) => {
+  async (venue: VenueType, { rejectWithValue, fulfillWithValue }) => {
     try {
       const { data } = await API.post(`/api/venues`, { venue });
 
@@ -51,10 +51,10 @@ export const deleteVenue = createAsyncThunk(`api/venues/id(delete)`, async (id: 
 });
 
 /***** UPDATE EVENT TYPE ******/
-export const updateVenue = createAsyncThunk(`api/venues/id(update)`, async (venue: IVenue, { rejectWithValue }) => {
+export const updateVenue = createAsyncThunk(`api/venues/id(update)`, async (venue: VenueType, { rejectWithValue }) => {
   try {
-    const id = venue.venue?.id;
-    const { data } = await API.put(`/api/venue-types/${id}`, { venue });
+    const { id } = venue;
+    const { data } = await API.put(`/api/venues/${id}`, { venue });
 
     return data;
   } catch (error: any) {

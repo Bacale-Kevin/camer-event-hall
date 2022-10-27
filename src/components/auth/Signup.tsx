@@ -94,7 +94,6 @@ const Signup: React.FC = () => {
                   <Box component="form" noValidate onSubmit={handleSubmit(onSubmitHandler)}>
                     <Stack sx={{ mt: 5 }} spacing={2}>
                       {/* name */}
-
                       <TextField
                         {...register("name")}
                         autoFocus
@@ -105,8 +104,8 @@ const Signup: React.FC = () => {
                         helperText={errors.name?.message}
                         error={errors.name ? true : false}
                       />
-                      {/* email */}
 
+                      {/* email */}
                       <TextField
                         {...register("email")}
                         id="signup-standard-basic"
@@ -116,8 +115,8 @@ const Signup: React.FC = () => {
                         helperText={errors.email?.message}
                         error={errors.email ? true : false}
                       />
-                      {/* password */}
 
+                      {/* password */}
                       <FormControl>
                         <InputLabel size="small">Password</InputLabel>
                         <OutlinedInput
@@ -146,8 +145,8 @@ const Signup: React.FC = () => {
                           {errors.password?.message}
                         </FormHelperText>
                       </FormControl>
-                      {/* confirm password */}
 
+                      {/* confirm password */}
                       <FormControl>
                         <InputLabel htmlFor="confirm-password" size="small">
                           Confirm Password
@@ -178,8 +177,8 @@ const Signup: React.FC = () => {
                           {errors.confirmPassword?.message}
                         </FormHelperText>
                       </FormControl>
-                      {/* submit button */}
 
+                      {/* submit button */}
                       <Button type="submit" disabled={loading} variant="contained">
                         Sign Up
                         {loading ? <CircularProgress color="inherit" size="20px" sx={{ ml: 2 }} /> : ""}

@@ -1,126 +1,126 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
-// import prisma from "../../../../lib/prisma";
-// import { IVenue } from "../../../types/venue.types";
+import { VenueType } from "./../../../types/venue.types";
+import prisma from "../../../../lib/prisma";
+import { verifyToken } from "../../../../utils/verifyToken";
 
+interface ExtendedNextApiRequest extends NextApiRequest {
+  body: {
+    venue: VenueType;
+  };
+}
 
-// interface ExtendedNextApiRequest extends NextApiRequest {
-//   body: {
-//     venue: IVenue;
-//   };
-// }
+export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
+  if (req.method === "GET") {
+    try {
+      const venues = await prisma.venue.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+              email: true,
+              role: true,
+              emailVerified: true,
+              phone: true,
+            },
+          },
+          facilities: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
 
-// export default async function handler(req: ExtendedNextApiRequest, res: NextApiResponse) {
-//   if (req.method === "GET") {
-//     try {
-//       const venues = await prisma.venue.findMany({
-//         orderBy: { createdAt: "desc" },
-//         include: {
-//           category: {
-//             select: {
-//               name: true,
-//             },
-//           },
-//           user: {
-//             select: {
-//               name: true,
-//               email: true,
-//               role: true,
-//               emailVerified: true,
-//               phone: true,
-//             },
-//           },
-//           amenities: {
-//             select: {
-//               name: true,
-//             },
-//           },
-//         },
-//       });
+      return res.status(200).json(venues);
+    } catch (error: any) {
+      console.log(error.message);
+      return res.status(500).send("Server error");
+    }
+  }
 
-//       return res.status(200).json(venues);
-//     } catch (error: any) {
-//       console.log(error.message);
-//       return res.status(500).send("Server error");
-//     }
-//   }
+  if (req.method === "POST") {
+    try {
+      const {
+        city,
+        description,
+        isVerified,
+        latitude,
+        location,
+        imagesUrl,
+        longitude,
+        name: venueName,
+        categoryId,
+        guestCapacity,
+        price,
+        facilities,
+      } = req.body.venue;
 
-//   if (req.method === "POST") {
-//     try {
-//       const {
-//         city,
-//         description,
-//         isVerified,
-//         latitude,
-//         location,
-//         imagesUrl,
-//         longitude,
-//         name,
-//         categoryId,
-//         guestCapacity,
-//         price,
-//         facilities,
-//       } = req.body.venue;
+      // const collectNameFromFacilities = facilities?.map((fclty) => {
+      //   return {
+      //     name: fclty?.name,
+      //   };
+      // });
 
-//       const { userId } = req.cookies;
+      console.log("request body --> ", req.body.venue);
 
-//       const user = await prisma.user.findUnique({ where: { id: userId } });
+      // const { token } = req.cookies;
+      // const payload = await verifyToken(token!, res);
 
-//       if (!user) return res.status(400).send("no log in user found maybe session have expired");
+      // const user = await prisma.user.findFirst({ where: { id: payload?.userId } });
 
-//       const venueType = await prisma.category.findFirst({
-//         where: { name: categoryId },
-//       });
-//       const { id } = venueType;
-//       const createdVenue = await prisma.venue.create({
-//         data: {
-//           city,
-//           description,
-//           location,
-//           name,
-//           isVerified,
-//           latitude: Number(latitude),
-//           longitude: Number(longitude),
-//           price: Number(price),
-//           guestCapacity: Number(guestCapacity),
-//           categoryId: id as string,
-//           userId: user?.id,
-//           imagesUrl,
-//           facilities: {
-//             createMany: {
-//               data: facilities,
-//             },
-//           },
-//         },
-//         include: {
-//           category: {
-//             select: {
-//               name: true,
-//             },
-//           },
-//           user: {
-//             select: {
-//               name: true,
-//               email: true,
-//               role: true,
-//               emailVerified: true,
-//               phone: true,
-//             },
-//           },
-//           amenities: {
-//             select: {
-//               name: true,
-//             },
-//           },
-//         },
-//       });
+      // const createdVenue = await prisma.venue.create({
+      //   data: {
+      //     name: venueName.toLowerCase(),
+      //     price: Number(price),
+      //     description,
+      //     location,
+      //     city,
+      //     guestCapacity: Number(guestCapacity),
+      //     longitude: Number(longitude),
+      //     latitude: Number(latitude),
+      //     isVerified,
+      //     imagesUrl,
+      //     categoryId,
+      //     userId: user?.id!,
+      //     facilities: {
+      //       connect: facilities,
+      //     },
+      //   },
+      //   include: {
+      //     category: {
+      //       select: {
+      //         name: true,
+      //       },
+      //     },
+      //     user: {
+      //       select: {
+      //         name: true,
+      //         email: true,
+      //         role: true,
+      //         emailVerified: true,
+      //         phone: true,
+      //       },
+      //     },
+      //     facilities: {
+      //       select: {
+      //         name: true,
+      //       },
+      //     },
+      //   },
+      // });
 
-//       console.log(createdVenue);
-
-//       return res.status(200).json(createdVenue);
-//     } catch (error: any) {
-//       console.log(error.message);
-//       return res.status(500).send("Server error");
-//     }
-//   }
-// }
+      return res.status(200).send("POST routes hitted");
+      // return res.status(200).json(createdVenue);
+    } catch (error: any) {
+      console.log(error.message);
+      return res.status(500).send("Server error");
+    }
+  }
+}

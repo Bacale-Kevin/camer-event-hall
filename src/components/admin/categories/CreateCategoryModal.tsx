@@ -15,13 +15,14 @@ type Props = {
   onClose: () => void;
   onSubmit: (name: string) => void;
   open: boolean;
+  inputRef: React.RefObject<HTMLInputElement>;
 };
 
 type FormInputs = {
   name: string;
 };
 
-const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
+const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit, inputRef }) => {
   const {
     register,
     handleSubmit,
@@ -37,7 +38,7 @@ const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
 
   return (
     <Dialog open={open}>
-      <Box sx={{ py: 4 }}>
+      <Box sx={{ py: 4, minWidth: "350px" }}>
         <Box component="form" noValidate onSubmit={handleSubmit(onSubmitHandler)}>
           <DialogTitle textAlign="center">Create Category</DialogTitle>
           <DialogContent>
@@ -45,6 +46,7 @@ const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
               <Grid item xs={12}>
                 <TextField
                   autoFocus
+                  fullWidth
                   label="Name"
                   type="text"
                   size="small"
@@ -54,6 +56,7 @@ const CreateCategoryModal: React.FC<Props> = ({ open, onClose, onSubmit }) => {
                   {...register("name")}
                   helperText={errors.name?.message}
                   error
+                  inputRef={inputRef}
                 />
               </Grid>
             </Grid>
