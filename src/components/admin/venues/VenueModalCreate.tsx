@@ -30,6 +30,7 @@ import {
 import { Clear, Edit, FileUpload } from "@mui/icons-material";
 import Image from "next/image";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 import { AppState } from "../../../redux/store";
 import { VenueType } from "../../../types/venue.types";
@@ -93,11 +94,21 @@ const VenueModalCreate: React.FC<Props> = ({ columns, onClose, onSubmit, open, i
     },
   });
 
-  const onSubmitHandler: SubmitHandler<VenueType> = (data) => {
-    console.log(data);
-    onSubmit(data);
+  const onSubmitHandler: SubmitHandler<VenueType> = async (data) => {
+    try {
+    const dataUrl = data.imagesUrl?.map((el: any) => {
+      return el.dataURL;
+    });
+    console.log("dataUR --> ", dataUrl);
+    data.imagesUrl = [];
+
+    // data.imagesUrl.push(...dataUrl!); //This doesn't work
+    data.imagesUrl.push("One", "Two", "Three"); //This works
+
+    // onSubmit(data);
     // reset();
     // onClose();
+    } catch (error) {}
   };
 
   return (
